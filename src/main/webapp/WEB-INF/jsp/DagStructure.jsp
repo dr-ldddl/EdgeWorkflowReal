@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Document Information</title>
+    <title>DAG Structure</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" type="text/css" href="/layui/css/jquery-ui-1.10.4.min.css">
 </head>
@@ -24,7 +24,7 @@ layui.use('element', function(){
 
 $(document).ready(function(){
     var dagParam = parent.$("#dagParam").val();
-    console.log(dagParam);
+    // console.log(dagParam);
     var dagJson = eval("("+dagParam+")");
     $.ajax({
         type: "POST",

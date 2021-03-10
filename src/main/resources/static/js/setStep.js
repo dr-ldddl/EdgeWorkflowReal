@@ -157,6 +157,10 @@ $(document).ready(function(){
     //点击next3
     var planName;
     $("#next3").click(function () {
+        //获取窗口索引
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.$("#childrenIndex").val(index);
+
         planName = $("input[name='planName']").val();
         if(planName==null || planName.trim()==""){
             layer.msg("Please enter PlanName");
@@ -188,8 +192,10 @@ $(document).ready(function(){
             json.planName = planName;
             if(userSelect == "selectCustom"){
                 json.custom = custom;
+                $("#assignType").removeAttr("disabled");
             } else if(userSelect == "selectScience"){
                 json.custom = "";
+                $("#assignType").attr("disabled","disabled");
             }
 
             /*关闭sets3,打开sets4*/
@@ -207,6 +213,36 @@ $(document).ready(function(){
                 html += "<div class=\"layui-col-xs3 item noSelect\">" + i + "</div>";
             }
             $("#main_left").html(html);
+
+            if (userSelect == "selectScience"){
+                $("#dagEditDiv").hide();
+
+                $("#content4").show();
+                $(".unassigned").show();
+                $(".assigned").show();
+
+                $("#assignType").val("standard");
+
+            }else{
+                //更新dag图
+                var username = parent.$("#username_a").text();
+                var custom = json.custom;
+                var dagXml;
+                if(custom != ""){
+                    dagXml = custom;
+                }else{
+                    dagXml = json.daxPath;
+                }
+                var planName = json.planName;
+                var customXml = json.custom;
+                var dagparams = new Object();
+                dagparams.username = username;
+                dagparams.dagXml = dagXml;
+                dagparams.planName = planName;
+                dagparams.customXml = customXml;
+                printDag(dagparams);
+            }
+
         }else{
             layer.msg("The plan name format is incorrect!",
                 {icon: 2,offset:['40%', '30%'],time:2000,area:['300px','70px']});
@@ -223,48 +259,82 @@ $(document).ready(function(){
 
     /*next按钮*/
     $("#submit").click(function(){
-        var pi = [];
-        var kmp = [];
-        var levenshtein = [];
-        var selectsort = [];
-        var workItem = $("#main_left").find(".item").length;
-        if(workItem != 0){
-            layer.msg("Please assign the task type first!",
-                {icon: 2,offset:['40%', '30%'],time:3000,area:['300px','70px']});
-            return;
+        var assignType = $("#assignType option:selected").val();
+        json.assignType = assignType;
+        if(assignType == "standard"){
+            var pi = [];
+            var kmp = [];
+            var levenshtein = [];
+            var selectsort = [];
+            var workItem = $("#main_left").find(".item").length;
+            if(workItem != 0){
+                layer.msg("Please assign the task type first!",
+                    {icon: 2,offset:['40%', '30%'],time:3000,area:['300px','70px']});
+                return;
+            }
+
+            $("#pi").find(".item").each(function(){
+                var jobId = $(this).text();
+                pi.push(jobId);
+            });
+
+            $("#kmp").find(".item").each(function(){
+                var jobId = $(this).text();
+                kmp.push(jobId);
+            });
+
+            $("#levenshtein").find(".item").each(function(){
+                var jobId = $(this).text();
+                levenshtein.push(jobId);
+            });
+
+            $("#selectsort").find(".item").each(function(){
+                var jobId = $(this).text();
+                selectsort.push(jobId);
+            });
+
+            // console.log(pi);
+            // console.log(kmp);
+            // console.log(levenshtein);
+            // console.log(selectsort);
+
+            /*保存数据*/
+            json.pi = pi;
+            json.kmp = kmp;
+            json.levenshtein = levenshtein;
+            json.selectsort = selectsort;
         }
+        if(assignType == "custom"){
+            var allTaskNum = 0;
+            var userSelect = $("input[name='radioGroup2']:checked").val();
+            if(userSelect == "selectCustom"){
+                var cusSelectXml = $("#custom2 option:selected").text();
+                allTaskNum = cusSelectXml.substring(cusSelectXml.lastIndexOf("_")+1,cusSelectXml.lastIndexOf("."));
+            } else if(userSelect == "selectScience"){
+                allTaskNum = $("#strategys option:selected").text();
+            }
 
-        $("#pi").find(".item").each(function(){
-            var jobId = $(this).text();
-            pi.push(jobId);
-        });
-
-        $("#kmp").find(".item").each(function(){
-            var jobId = $(this).text();
-            kmp.push(jobId);
-        });
-
-        $("#levenshtein").find(".item").each(function(){
-            var jobId = $(this).text();
-            levenshtein.push(jobId);
-        });
-
-        $("#selectsort").find(".item").each(function(){
-            var jobId = $(this).text();
-            selectsort.push(jobId);
-        });
-
-        // console.log(pi);
-        // console.log(kmp);
-        // console.log(levenshtein);
-        // console.log(selectsort);
-
-        /*保存数据*/
-        json.pi = pi;
-        json.kmp = kmp;
-        json.levenshtein = levenshtein;
-        json.selectsort = selectsort;
-
+            var username = parent.$("#username_a").text();
+            var planName = json.planName;
+            var custom = json.custom;
+            var workflowName;
+            if(custom != ""){
+                workflowName = custom;
+            }else{
+                workflowName = json.daxPath;
+            }
+            var taskListParam = {"username": username , "planName" : planName , "workflowName" : workflowName};
+            var exitTasks = getExistTasks(taskListParam);
+            var exitTasksNum = exitTasks.length;
+            json.workflowPathParam = taskListParam;
+            // console.log(allTaskNum);
+            // console.log("exitTasksNum:" + exitTasksNum);
+            if(exitTasksNum < allTaskNum){
+                layer.msg("Please assign the task type first!",
+                    {icon: 2,offset:['40%', '30%'],time:3000,area:['300px','70px']});
+                return;
+            }
+        }
         /*关闭sets4,打开sets1*/
         $("#sets4").css('display','none');
         $("#sets1").css('display','block');
@@ -709,6 +779,7 @@ $(document).ready(function(){
                 },
             });
         }
+        console.log("json" + JSON.stringify(json));
         //获取窗口索引
         var index = parent.layer.getFrameIndex(window.name);
         //关闭当前页面
@@ -999,6 +1070,8 @@ $(document).ready(function(){
                 var dagData = eval("("+data+")");
                 var points = dagData["points"];
                 var links = dagData["links"];
+                // console.log(JSON.stringify(points));
+                // console.log(JSON.stringify(links));
                 loadDag(points, links);
             },
             error: function(data){
@@ -1036,6 +1109,68 @@ $(document).ready(function(){
         parent.$("#dagParam").val(JSON.stringify(data));
         parent.$("#showDag").click();
     });
+
+//    *************************用户自定义代码开始*************************
+    $("#assignType").change(function(){
+        var assignType = $("#assignType option:selected").val();
+        // console.log(assignType);
+        if(assignType == "standard"){
+            // $("#dagEditDiv").html("");
+            $("#dagEditDiv").hide();
+
+            $("#content4").show();
+            $(".unassigned").show();
+            $(".assigned").show();
+        }
+
+        if (assignType == "custom"){
+            $("#dagEditDiv").show();
+
+            $("#content4").hide();
+            $(".unassigned").hide();
+            $(".assigned").hide();
+
+            var username = parent.$("#username_a").text();
+            var custom = json.custom;
+            var dagXml;
+            if(custom != ""){
+                dagXml = custom;
+            }else{
+                dagXml = json.daxPath;
+            }
+            var planName = json.planName;
+            var customXml = json.custom;
+            var dagparams = new Object();
+            dagparams.username = username;
+            dagparams.dagXml = dagXml;
+            dagparams.planName = planName;
+            dagparams.customXml = customXml;
+            printDag(dagparams);
+        }
+    });
+
+    //刷新DAG
+    $("#flushDag").click(function(){
+        // console.log("flush dag success!");
+        var username = parent.$("#username_a").text();
+        var custom = json.custom;
+        var dagXml;
+        if(custom != ""){
+            dagXml = custom;
+        }else{
+            dagXml = json.daxPath;
+        }
+        var planName = json.planName;
+        var customXml = json.custom;
+        var dagparams = new Object();
+        dagparams.username = username;
+        dagparams.dagXml = dagXml;
+        dagparams.planName = planName;
+        dagparams.customXml = customXml;
+        printDag(dagparams);
+    });
+//    *************************用户自定义代码结束*************************
+
 
 });
 
@@ -1086,7 +1221,6 @@ function loadDag(points, links){
                     fontSize: 20
                 },
                 data: points,
-                // links: [],
                 links: links,
                 lineStyle: {
                     opacity: 0.9,
@@ -1101,4 +1235,271 @@ function loadDag(points, links){
     dagChart.clear();
     dagChart.setOption(option);
 
+}
+
+
+//*************************用户自定义代码开始*************************
+var taskList;
+var points;
+var links;
+var dagFlag = false;
+var taskFlag = false;
+
+function printDag(dagparams){
+    var dagXml = dagparams.dagXml;
+    var planName = dagparams.planName;
+    var customXml = dagparams.customXml;
+    var username = dagparams.username;
+
+    // console.log("dagXml:" + dagXml);
+    // console.log("planName:" + planName);
+    // console.log("customXml:" + customXml);
+    // console.log("username:" + username);
+    /*dagXml = "Montage_20.xml";
+    customXml = "";
+    username = "dr";
+    planName = "drtest";*/
+    parent.$("#workflowName").val(dagXml);
+    parent.$("#planName").val(planName);
+
+    var dagJson = {dagXml:dagXml,customXml:customXml};
+    var taskListParam = {"username": username , "planName" : planName , "workflowName" : dagXml};
+
+    //获得所有已经存在编辑代码文件的工作流节点。
+    getTaskList(taskListParam);
+
+    //绘制DAG图
+    getDag(dagJson);
+
+    //绘制工作流DAG
+    // console.log("dagFlag:" + dagFlag);
+    // console.log("taskFlag:" + taskFlag);
+    if(dagFlag && taskFlag){
+        customDagCode(points , links);
+    }
+
+}
+
+//获得所有已经存在编辑代码文件的工作流节点。
+function getTaskList(taskListParam) {
+    $.ajax({
+        type: "POST",
+        url: "/getTaskList",
+        data: {taskListParam: JSON.stringify(taskListParam)},
+        async: false,
+        dataType:"text",
+        success: function (res) {
+            // console.log(res);
+            res = eval("("+ res +")");
+            taskList = res["taskList"];
+            // console.log(taskList);
+            // console.log("getTaskList");
+            taskFlag = true;
+        },
+    });
+}
+
+//获得所有已经存在编辑代码文件的工作流节点。
+function getExistTasks(taskListParam) {
+    var taskList;
+    $.ajax({
+        type: "POST",
+        url: "/getTaskList",
+        data: {taskListParam: JSON.stringify(taskListParam)},
+        async: false,
+        dataType:"text",
+        success: function (res) {
+            res = eval("("+ res +")");
+            taskList = res["taskList"];
+            // console.log(taskList);
+        },
+    });
+    return taskList;
+}
+
+//绘制DAG图
+function getDag(dagJson){
+    $.ajax({
+        type: "POST",
+        url: "/getDag",
+        data: dagJson,
+        dataType: "text",
+        async: false,
+        success: function (data) {
+            // console.log(data);
+            var dagData = eval("("+data+")");
+            points = dagData["points"];
+            links = dagData["links"];
+            // loadDag(points, links);
+            // console.log("getDag");
+            dagFlag = true;
+            // console.log("points:" + JSON.stringify(points));
+            // console.log("links:" + JSON.stringify(links));
+
+        },
+        error: function(data){
+            console.log("error...");
+        }
+    });
+}
+
+//加载dag图
+function customDagCode(/*points, links*/){
+    // console.log(points);
+    // console.log(links);
+    var option = {
+        title: {
+            text: 'DAG Structure'
+        },
+        tooltip: {},
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+            {
+                itemStyle: {//配置节点的颜色已及尺寸
+                    normal: {
+                        color: function (params) {
+                            var colorList = ['#FF0000','#28cad8'];
+                            // console.log(params.dataIndex);
+                            var taskName = params.name;
+                            var exitFlag = $.inArray(taskName , taskList);
+                            if(exitFlag >= 0){
+                                return colorList[1];
+                            }else{
+                                return colorList[0];
+                            }
+                        },
+
+                    }
+                },
+                type: 'graph',
+                layout: 'none',
+                symbolSize: 20,
+                roam: true,
+                label: {
+                    show: true
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    fontSize: 20
+                },
+                data: points,
+                // links: [],
+                links: links,
+                lineStyle: {
+                    opacity: 0.9,
+                    width: 2,
+                    curveness: 0
+                }
+            }
+        ]
+    };
+
+    var dagChart = echarts.init(document.getElementById('dagEditDiv'));
+    dagChart.clear();
+    dagChart.setOption(option);
+    //DAG图中元素左击事件
+    dagChart.off("click");
+    dagChart.on("click" , function (elem) {
+        // console.log(elem);
+        // console.log(elem.dataIndex);
+        click(elem);
+    });
+    //DAG图中元素右击事件
+    dagChart.off("contextmenu");
+    dagChart.on("contextmenu" , function(elem){
+        contextmenu(elem);
+    });
+}
+
+//禁用浏览器的右击菜单
+$(document).contextmenu(function() {
+    return false;
+});
+
+//DAG图中元素左击事件
+function click(task) {
+
+    // console.log("click:");
+    var name = task["name"];
+    var type = task['dataType'];
+    var color = task["color"];
+    var taskName = parent.$("#taskName");
+    var editFlag = parent.$("#editFlag");
+
+    // console.log(task);
+    // console.log("name:" + name);
+    // console.log("dataType:" + type);
+    // console.log("color:" + color);
+
+    if(type == "node"){
+        taskName.val(name);
+        if(color == "#FF0000"){
+            editFlag.val(false);
+        }else{
+            editFlag.val(true);
+        }
+        // editFlag.val(color);
+
+        parent.layer.open({
+            type: 2,
+            shade:0,
+            offset: "140px",
+            title: "Custom Task",
+            content: "/CodeRun",
+            skin: "title-style",
+            area: ['55%', '70%'],
+            cancel: function(){
+
+            }
+        });
+    }
+}
+
+//DAG图中元素右击事件
+function contextmenu(task){
+
+    console.log("contextmenu:");
+    /*var name = task["name"];
+    var type = task['dataType'];
+    var taskName = parent.$("#taskName");
+
+    // console.log(task);
+    console.log("name:" + name);
+    console.log("dataType:" + type);
+
+    if(type == "node"){
+        taskName.val(name);
+
+        parent.layer.open({
+            type: 2,
+            shade:0,
+            offset: "140px",
+            title: "Custom Task",
+            content: "/CodeRun",
+            skin: "title-style",
+            area: ['55%', '70%'],
+            cancel: function(){
+
+            }
+        });
+    }*/
+
+    var mouseRightMenu = layui.mouseRightMenu;
+    var menu_data=[
+        {'data':"data",'type':1,'title':'RandomPI'},
+        {'data':"data",'type':1,'title':'KMP Match'},
+        {'data':"data",'type':1,'title':'Levenshtein'},
+        {'data':"data",'type':1,'title':'SelectSort'},
+
+    ]
+    mouseRightMenu.open(menu_data,false,function(d){
+        layer.alert(JSON.stringify(d));
+    })
+    return false;
+}
+//*************************用户自定义代码结束*************************
+function test(){
+    alert("iframe test!");
 }

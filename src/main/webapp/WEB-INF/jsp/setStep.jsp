@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="css/setStep.css">
     <link rel="stylesheet" type="text/css" href="/layui/css/jquery-ui-1.10.4.min.css">
+    <link rel="stylesheet" type="text/css" href="/mouseRightMenu/mouseRightMenu.css">
     <script src="/jquery/jquery-1.9.1.min.js"></script>
     <script src="/jquery/jquery.cookie.js"></script>
     <script type="text/javascript" src="/layui/layui.all.js"></script>
@@ -15,6 +16,7 @@
     <script type="text/javascript" src="/echarts/echarts.min.js"></script>
     <script type="text/javascript" src="/echarts/echarts-en.min.js"></script>
     <script type="text/javascript" src="js/setStep.js"></script>
+    <script type="text/javascript" src="/mouseRightMenu/mouseRightMenu.js"></script>
     <%--<script type="text/javascript" src="js/setStepTemp.js"></script>--%>
     <script>
         //注意：导航 依赖 element 模块，否则无法进行功能性操作
@@ -379,7 +381,7 @@
             <li id="environment_title4">3.Setting EC Environment</li>
             <li id="strategy_title4">4.Select Offloading Strategy</li>
         </ul>
-        <div id="content4" class=" layui-container layui-row">
+        <div id="content4" class="layui-container layui-row">
             <div class="layui-col-xs5 layui-row" style="margin-top: 13px;margin-left: 20px">
                 <div class="layui-col-xs12">
                     <button id="left_selectAll" type="button" class="layui-btn layui-btn-primary layui-btn-sm">Select All</button>
@@ -461,12 +463,20 @@
         </div>
         <div class="unassigned">Unassigned Tasks</div>
         <div class="assigned"> Assigned Tasks</div>
+
+        <div id="dagEditDiv" class="" hidden>
+
+        </div>
         <div id="btn4">
+            <select id="assignType">
+                <option value="standard">standard</option>
+                <option value="custom">custom</option>
+            </select>
             <button id="pre4" type="button" class="action-btn layui-btn layui-btn-radius layui-btn-normal">previous</button>
             <button id="submit" type="button" class="action-btn layui-btn layui-btn-radius layui-btn-normal">next</button>
         </div>
     </div>
 </div>
-
+<button id="flushDag" hidden>flushDag</button>
 </body>
 </html>

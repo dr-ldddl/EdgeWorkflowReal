@@ -2,10 +2,7 @@ package codeEdit.execute;
 
 import sun.reflect.CallerSensitive;
 
-import java.io.Console;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.channels.Channel;
 import java.util.Properties;
 

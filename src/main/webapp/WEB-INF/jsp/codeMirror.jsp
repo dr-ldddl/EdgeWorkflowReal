@@ -21,7 +21,10 @@ CodeMirror
 <head>
     <meta charset="UTF-8">
     <title>代码在线运行工具</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <%--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">--%>
+    <link rel="stylesheet" href="/bootstrapCss/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/css/codeMirror.css">
     <style>
         #editor {
             position: absolute;
@@ -41,84 +44,52 @@ CodeMirror
 </nav>
 <div style="height: 30px"></div>
 <div class="container shadow p-3 mb-5 bg-white rounded">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-2">
-                <button id="sub-btn" class="btn btn-success " onclick="submit()">点击运行！</button>
-            </div>
-            <div class="col-3">
-                <select onchange="selectLanguage(this)" id="language-type" class="form-control">
-                    <option selected>Java</option>
-                    <option>C</option>
-                    <option>CPP</option>
-                    <option>Python</option>
-                </select>
-            </div>
-            <div class="col-3">
-                <button type="button" class="btn btn-secondary" onclick="clean()">清空</button>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-2">
+                    <button id="sub-btn" class="btn btn-success" onclick="runCode()">点击运行！</button>
+                </div>
+                <div class="col-3">
+                    <select onchange="selectLanguage(this)" id="language-type" class="form-control">
+                        <option selected>Java</option>
+                        <option>C</option>
+                        <option>CPP</option>
+                        <option>Python</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <button type="button" class="btn btn-secondary" onclick="clean()">清空</button>
+                </div>
+                <div class="col-3">
+                    <button type="button" class="btn btn-success" onclick="submitCode()">提交代码</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div style="height: 20px"></div>
+        <div style="height: 20px;"></div>
 
-    <div class="row">
-        <div class="col-7 border border-light">
-            <div id="editor"></div>
+        <div class="row">
+            <div class="col-7 border border-light">
+                <tex id="editor" name="source">${lastSource}</tex>
+            </div>
+            <div class="col-1 border-left"></div>
+            <div class="col text-center">
+                <textarea id="output" class="form-control" rows="15">${runResult}</textarea>
+            </div>
         </div>
-        <div class="col-1 border-left"></div>
-        <div class="col text-center">
-            <textarea id="output" class="form-control" rows="15"></textarea>
-        </div>
-    </div>
 </div>
+
+</body>
+
+
+<script src="/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.8/ace.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.8/ext-language_tools.min.js" type="text/javascript"></script>
+<%--<script src="/jquery/ace.js" type="text/javascript"></script>--%>
+<%--<script src="/jquery/ext-language_tools.min.js" type="text/javascript"></script>--%>
+<script src="/js/codeMirror.js" type="text/javascript"></script>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.8/mode-java.min.js" type="text/javascript"></script>-->
 <script>
-    ace.require("ace/ext/language_tools");
-    const editor = ace.edit("editor");
-    editor.session.setMode("ace/mode/java");
-    editor.setTheme("ace/theme/github");
-    // enable autocompletion and snippets
-    editor.setOptions({
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        enableLiveAutocompletion: true
-    });
 
-    function submit() {
-        document.querySelector("#output").value = "代码运行中！";
-        let data = editor.getValue();
-
-
-        fetch("http://127.0.0.1:8848/run", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8"
-            },
-            body: JSON.stringify({
-                code: data,
-                type: document.querySelector("#language-type").value.toUpperCase()
-            })
-
-        }).then(response => response.json())
-    .then(json => {
-            console.log(json);
-        document.querySelector("#output").value = json.output;
-    });
-    }
-
-    function clean() {
-        editor.setValue("");
-    }
-
-    function selectLanguage(e) {
-        let mode = "ace/mode/" + e.value.toLowerCase();
-        if (e.value.toLowerCase() === "c" || e.value.toLowerCase() === "cpp") {
-            mode = "ace/mode/c_cpp"
-        }
-        editor.session.setMode(mode);
-    }
 </script>
-</body>
 </html>

@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import com.jcraft.jsch.ChannelExec;
@@ -31,7 +32,7 @@ import com.jcraft.jsch.JSchException;
 public class DockerLink {
 
     //本地运行
-    private static String host = "192.168.81.131";
+    private static String host = "127.0.0.1";
     private static int port = 22;
     private static String user = "root";
     private static String password = "root";
@@ -79,11 +80,11 @@ public class DockerLink {
             System.out.println(res);
         }*/
         double sum_100[] = new double[100];
-        for(int i = 0; i < 100; i++){
+        for(int i = 0; i < 10; i++){
             String command = "cd workspace\n" +
                     "./run.sh" + " " + cpu_percent + " " + image + " " + runtime_arr;
-
             String res =exeCommand(host,port,user,password,command);
+            System.out.println(res);
             String[] res_arr = res.split("\n");
             String realTime = res_arr[res_arr.length - 2];
             realTime = realTime.substring(0,realTime.length() - 1);
@@ -386,7 +387,6 @@ public class DockerLink {
         String workType = output.getWorkType();
 
         //使用镜像名称
-//        String image = "pi";
         String image = "";
         if(workType.equals("pi")){
             System.out.println("pi");
@@ -400,44 +400,250 @@ public class DockerLink {
         }else if(workType.equals("selectsort")){
             System.out.println("selectsort");
             image = "selectsort";
+        }else{
+//            System.out.println(workType);
+            image = workType;
         }
 
-        System.out.println("dockerlink out:");
-        String command = "cd workspace\n" +
-                "./run.sh" + " " + cpu_percent + " " + image + " " + workLoad;
-        String res = exeCommand(host,port,user,password,command);
+        //是否为自定义的custom
+        String custom = IndexService.customType;
+
+        //是自定义的工作流代码
+        if (custom.equals("custom")){
+            //taskId == Stage-in
+            if(workType.equals("pi")){
+                System.out.println("stand docker execute:");
+                String command = "cd workspace\n" +
+                        "./run.sh" + " " + cpu_percent + " " + image + " " + workLoad;
+                String res = exeCommand(host,port,user,password,command);
 //            System.out.println(res);
-        String[] res_arr = res.split("\n");
+                String[] res_arr = res.split("\n");
             /*for (String item : res_arr) {
                 System.out.println("item:");
                 System.out.println(item);
             }*/
-        String realTime = res_arr[res_arr.length - 2];
-        realTime = realTime.substring(0,realTime.length() - 1);
-        double price = 0.8;
-        BigDecimal bd   =   new   BigDecimal(Double.parseDouble(realTime) * price + "");
+                String realTime = res_arr[res_arr.length - 2];
+                realTime = realTime.substring(0,realTime.length() - 1);
+                double price = 0.8;
+                BigDecimal bd   =   new   BigDecimal(Double.parseDouble(realTime) * price + "");
 //        String realCost_string   =   bd.setScale(2,BigDecimal.ROUND_HALF_UP) + "";
 //        String realCost = Double.parseDouble(realTime) * price + "";
-        String realCost = bd.setScale(2,BigDecimal.ROUND_HALF_UP) + "";
-        System.out.println("reaTime:" + realTime);
+                String realCost = bd.setScale(2,BigDecimal.ROUND_HALF_UP) + "";
+                System.out.println("reaTime:" + realTime);
 //        System.out.println("realCost:" + realCost);
 
-        //修改真实环境下的执行参数
-        output.setRealTime(Double.valueOf(realTime) + "");
-        output.setRealCost(realCost);
-        output.setRealStatus("SUCCESS");
-        output.setRealStartTime(output.getStartTime());
+                //修改真实环境下的执行参数
+                output.setRealTime(Double.valueOf(realTime) + "");
+                output.setRealCost(realCost);
+                output.setRealStatus("SUCCESS");
+                output.setRealStartTime(output.getStartTime());
 
-        DecimalFormat dft = new DecimalFormat("######0.00");
-        double realFinishTime = Double.valueOf(output.getStartTime()) + Double.valueOf(realTime);
+                DecimalFormat dft = new DecimalFormat("######0.00");
+                double realFinishTime = Double.valueOf(output.getStartTime()) + Double.valueOf(realTime);
 //        System.out.println("realFinishTime:" + realFinishTime);
 //        System.out.println("realFinishTime-dft:" + dft.format(realFinishTime));
-        output.setRealFinishTime(dft.format(realFinishTime) + "");
+                output.setRealFinishTime(dft.format(realFinishTime) + "");
 
-        System.out.println(output.toString());
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("real_outputEntity", output);
+                System.out.println(output.toString());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("real_outputEntity", output);
 
-        return jsonObject.toJSONString();
+                return jsonObject.toJSONString();
+            }
+            else{//taskId != Stage-in
+
+                System.out.println("image:" + image);
+                String elems = getContainerElems(image);
+                System.out.println("elems:" + elems);
+                System.out.println("custom docker execute:");
+
+//              执行容器并计算执行时间
+                String containerCommand = "cd workspace\n" +
+                        "./run.sh" + " " + cpu_percent + " " + image + " " + elems;
+                double startTime = System.currentTimeMillis();
+                String containerRes = "";
+                try {
+                    containerRes = exeCommand(host , port , user , password , containerCommand);
+                } catch (JSchException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                double endTime = System.currentTimeMillis();
+                double executeTime = (endTime - startTime) / 1000F;
+                String realTime = executeTime + "";
+                double price = 0.8;
+                BigDecimal bd   =   new   BigDecimal(executeTime * price + "");
+                String realCost = bd.setScale(2,BigDecimal.ROUND_HALF_UP) + "";
+
+                System.out.println("containerRes:" + containerRes);
+                System.out.println("reaTime:" + realTime);
+
+//                删除容器
+                /*String containerDelCommand = "docker rmi " + image;
+                String containerDelRes = "";
+                System.out.println("containerDelCommand:" + containerDelCommand);
+                try {
+                    containerDelRes = exeCommand(host , port , user , password , containerDelCommand);
+                } catch (JSchException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("containerDelRes: " + containerDelRes);*/
+
+                //修改真实环境下的执行参数
+                output.setRealTime(Double.valueOf(realTime) + "");
+                output.setRealCost(realCost);
+                output.setRealStatus("SUCCESS");
+                output.setRealStartTime(output.getStartTime());
+
+                DecimalFormat dft = new DecimalFormat("######0.00");
+                double realFinishTime = Double.valueOf(output.getStartTime()) + Double.valueOf(realTime);
+//        System.out.println("realFinishTime:" + realFinishTime);
+//        System.out.println("realFinishTime-dft:" + dft.format(realFinishTime));
+                output.setRealFinishTime(dft.format(realFinishTime) + "");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("real_outputEntity", output);
+
+                return jsonObject.toJSONString();
+            }
+
+
+
+        }else{//不是自定义的工作流代码
+            System.out.println("stand docker execute:");
+            String command = "cd workspace\n" +
+                    "./run.sh" + " " + cpu_percent + " " + image + " " + workLoad;
+            String res = exeCommand(host,port,user,password,command);
+//            System.out.println(res);
+            String[] res_arr = res.split("\n");
+            /*for (String item : res_arr) {
+                System.out.println("item:");
+                System.out.println(item);
+            }*/
+            String realTime = res_arr[res_arr.length - 2];
+            realTime = realTime.substring(0,realTime.length() - 1);
+            double price = 0.8;
+            BigDecimal bd   =   new   BigDecimal(Double.parseDouble(realTime) * price + "");
+//        String realCost_string   =   bd.setScale(2,BigDecimal.ROUND_HALF_UP) + "";
+//        String realCost = Double.parseDouble(realTime) * price + "";
+            String realCost = bd.setScale(2,BigDecimal.ROUND_HALF_UP) + "";
+            System.out.println("reaTime:" + realTime);
+//        System.out.println("realCost:" + realCost);
+
+            //修改真实环境下的执行参数
+            output.setRealTime(Double.valueOf(realTime) + "");
+            output.setRealCost(realCost);
+            output.setRealStatus("SUCCESS");
+            output.setRealStartTime(output.getStartTime());
+
+            DecimalFormat dft = new DecimalFormat("######0.00");
+            double realFinishTime = Double.valueOf(output.getStartTime()) + Double.valueOf(realTime);
+//        System.out.println("realFinishTime:" + realFinishTime);
+//        System.out.println("realFinishTime-dft:" + dft.format(realFinishTime));
+            output.setRealFinishTime(dft.format(realFinishTime) + "");
+
+            System.out.println(output.toString());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("real_outputEntity", output);
+
+            return jsonObject.toJSONString();
+        }
+
+    }
+
+    private String getContainerElems(String imageName){
+        Map<String , String > codeExecuteRes = IndexService.codeExecuteRes;
+        List<Map<String,String>> dagLinks = IndexService.dagLinks;
+//        System.out.println(codeExecuteRes);
+//        System.out.println(dagLinks);
+
+        //获得当前节点的输入参数数量
+        String itemId = imageName.replace("task_" , "");
+        int input = 0;
+        int output = 0;
+        for (int j = 0; j < dagLinks.size(); j++) {
+            Map<String , String> linkmap = dagLinks.get(j);
+            String source = linkmap.get("source").toLowerCase();
+            String target = linkmap.get("target").toLowerCase();
+            if (source.equals(itemId)){
+                output++;
+            }
+            if (target.equals(itemId)){
+                input++;
+            }
+
+        }
+
+//        String elems = "";
+        //没有输入参数input==0
+        if (input == 0){
+            return "";
+        }else{//有输入参数
+            List<String> sources = new ArrayList<>();
+            String elems = "";
+            for (int j = 0; j < dagLinks.size(); j++) {
+                Map<String , String> linkmap = dagLinks.get(j);
+                String source = linkmap.get("source").toLowerCase();
+                String target = linkmap.get("target").toLowerCase();
+
+                if (target.equals(itemId)){
+                    sources.add(source);
+                }
+            }
+
+            sources.sort(new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.compareTo(s2);
+                }
+            });
+
+            String elem = "";
+            for (int j = 0; j < sources.size(); j++) {
+                String sourceItem = sources.get(j);
+                String value = codeExecuteRes.get(sourceItem);
+                String temp = value.replaceAll(System.lineSeparator() , ",");
+
+                List<String> targetArray = new ArrayList<>();
+
+                for (int k = 0; k < dagLinks.size(); k++) {
+                    Map<String , String> linkmap = dagLinks.get(k);
+                    String source = linkmap.get("source").toLowerCase();
+                    String target = linkmap.get("target").toLowerCase();
+
+                    if (source.equals(sourceItem)){
+                        targetArray.add(target);
+                    }
+                }
+                targetArray.sort(new Comparator<String>() {
+                    @Override
+                    public int compare(String s1, String s2) {
+                        //如果是数字，按照数字排序，如果是字符串按照字符串排序
+                        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+                        boolean num1 = pattern.matcher(s1).matches();
+                        boolean num2 = pattern.matcher(s2).matches();
+                        if(num1 && num2){
+                            int o1 = Integer.parseInt(s1);
+                            int o2 = Integer.parseInt(s2);
+                            return o1 - o2;
+                        }else{
+                            return s1.compareTo(s2);
+                        }
+                    }
+                });
+//                    System.out.println(targetArray);
+
+                int index = targetArray.indexOf(itemId);
+                elem = temp.split(",")[index];
+                elems += " " + elem;
+            }
+            return elems;
+        }
+
+
+
     }
 }

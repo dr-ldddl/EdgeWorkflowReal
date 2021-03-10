@@ -11,7 +11,7 @@ public class Test {
         String filePath = "E:\\dagXML\\line3_3.xml";
         List<String> points = ParseXML.getPoints(filePath);
         List<Map<String,String>> links = ParseXML.getLinks(filePath);
-        System.out.println("points: " + points);
-        System.out.println("links:" + links);
+//        System.out.println("points: " + points);
+//        System.out.println("links:" + links);
     }
 }

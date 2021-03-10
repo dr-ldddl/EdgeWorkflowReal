@@ -218,6 +218,42 @@
                                 {"nodeSize":"24","daxPath":"Epigenomics_24.xml","planName":"example3","custom":"","pi":[],"kmp":[],"levenshtein":[],"selectsort":["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"],"cloudServer":1,"fogServer":1,"mobile":2,"setting_json":{"cloud_mips_list":[1600],"cloud_cost_list":[0.96],"fog_mips_list":[1300],"fog_cost_list":[0.48],"mobile_mips_list":[1000,1000],"cloud_number":1,"fog_number":1,"mobile_number":2,"GA":{"GA-popsize":20,"GA-gmax":100,"GA-crossoverProb":0.8,"GA-mutationRate":0.01,"GA-repeat":1},"PSO":{"PSO-particleNum":20,"PSO-iterateNum":100,"PSO-c1":1.37,"PSO-c2":1.37,"PSO-w":0.73,"PSO-repeat":1}},"strategy":"Energy-Optimal","alSet":["MINMIN","MAXMIN","PSO"],"optimize_objective":"Time","deadline":"","editTime":"2020-11-06 10:51:39"}
                             </td>
                         </tr>
+                        <tr>
+                            <td class="plan_no">4</td>
+                            <td class="plan_name">a</td>
+                            <td class="plan_mec">
+                                <div class="layui-row">
+                                    <div class="layui-col-xs4">
+                                        <div class="img_cloud">
+                                            <div class="cloud_topnum">1</div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-xs4">
+                                        <div class="img_fog">
+                                            <div class="fog_topnum">1</div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-xs4">
+                                        <div class="img_mobile">
+                                            <div class="mobile_topnum">1</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="plan_strategy">--</td>
+                            <td class="plan_algo">MINMIN</td>
+                            <td class="plan_opti">Time</td>
+                            <td class="plan_deadline">--</td>
+                            <td class="plan_workflow">Montage_20.xml</td>
+                            <td class="plan_editTime">2021-01-23 12:17:19</td>
+                            <td class="plan_action">
+                                <div class="layui-btn-group">
+                                    <button type="button" class="layui-btn layui-btn-sm btns run_sim"><i class="layui-icon"></i></button>
+                                    <button type="button" class="layui-btn layui-btn-sm btns del_plan"><i class="layui-icon"></i></button>
+                                </div>
+                            </td>
+                            <td hidden="">{"nodeSize":"20","daxPath":"Montage_20.xml","planName":"a","custom":"","assignType":"custom","workflowPathParam":{"username":"me","planName":"a","workflowName":"Montage_20.xml"},"cloudServer":1,"fogServer":1,"mobile":1,"setting_json":{"cloud_mips_list":[1600],"cloud_cost_list":[0.96],"fog_mips_list":[1300],"fog_cost_list":[0.48],"mobile_mips_list":[1000],"cloud_number":1,"fog_number":1,"mobile_number":1,"GA":{"GA-popsize":20,"GA-gmax":100,"GA-crossoverProb":0.8,"GA-mutationRate":0.01,"GA-repeat":1},"PSO":{"PSO-particleNum":20,"PSO-iterateNum":100,"PSO-c1":1.37,"PSO-c2":1.37,"PSO-w":0.73,"PSO-repeat":1}},"strategy":"","alSet":["MINMIN"],"optimize_objective":"Time","deadline":"","editTime":"2021-01-23 12:17:19"}</td>
+                        </tr>
                         <tr style="height: 40px;">
                             <td></td>
                             <td></td>
@@ -334,6 +370,9 @@
         </div>
         <div id="gantt-chart-div"  class="layui-col-md12 chart_item">
             <div id="ganttChartMain"></div>
+        </div>
+        <div id="dagCodeResult" class="layui-col-md12 chart_item">
+            <%--<div id="dagChartMain"></div>--%>
         </div>
     </div>
 </div>
@@ -599,7 +638,6 @@
 </div>--%>
 
 <%--------------------------尾部栏结束------------------------------%>
-
 <%--------------------------隐藏内容开始------------------------------%>
 <%--<div style="display: none" id="parent_cloud_tips"></div>--%>
 <div style="display: none" id="chart_content"></div>
@@ -607,10 +645,16 @@
 <input type="hidden" id="emailAddress" value='${emailAddress}'>
 <input type="hidden" id="customXmlFile" value="">
 <input type="hidden" id="editPlanJson" value="">
-<button id="flushPlan" hidden>flushPlan</button>
 <input type="hidden" id="dagParam" value="">
-<button hidden id="showDag" hidden>show Dag</button>
-<%--<button id="test">test</button>--%>
+<input type="hidden" id="workflowName">
+<input type="hidden" id="planName">
+<input type="hidden" id="taskName">
+<input type="hidden" id="editFlag">
+<input type="hidden" id="childrenIndex" value="">
+<button id="flushPlan" hidden>flushPlan</button>
+<button id="showDag" hidden>show Dag</button>
+<button id="flushChildrenDag" hidden>flushChildrenDag</button>
+<button id="test" hidden>test</button>
 <div id="background" class="background" style="display: none; "></div>
 <div id="progressBar" class="progressBar" style="display: none; ">Data loading, please wait...</div>
 <%--------------------------隐藏内容结束------------------------------%>

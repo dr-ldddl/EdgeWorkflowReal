@@ -879,3 +879,25 @@ input{
 #next1{
     width: 80px;
 }
+
+/**************************用户自定义代码开始**************************/
+#assignType{
+    width: 120px;
+    height: 30px;
+    font-size: 18px;
+    border-radius: 15px;
+    position: absolute;
+    top: 90%;
+    left: 32%;
+}
+
+#dagEditDiv{
+    width: 960px;
+    height: 380px;
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    float: left;
+}
+
+/**************************用户自定义代码结束**************************/

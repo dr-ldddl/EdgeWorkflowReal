@@ -1,6 +1,7 @@
 package com.ccis.fog;
 
-import java.util.Calendar;
+import java.util.*;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -55,8 +56,6 @@ import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
@@ -725,7 +724,7 @@ public class IndexController {
     }
 
     //在真实环境中执行单个任务
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "realOperate")
     public String realOperate(@RequestBody OutputEntity outputEntity) throws IOException, JSchException {
 
@@ -733,6 +732,50 @@ public class IndexController {
 
         System.out.println(real_result);
         return real_result;
+    }*/
+    @ResponseBody
+    @RequestMapping(value = "realOperate")
+    public String realOperate(@RequestBody JSONObject outputParams)throws IOException, JSchException{
+//      解析参数
+        System.out.println(outputParams);
+        Object containerParam = outputParams.get("containerParam");
+        OutputEntity outputEntity = outputParams.getObject("outputEntity" , OutputEntity.class);
+        String workType = outputEntity.getWorkType();
+
+        System.out.println("containerParam: " + containerParam);
+        System.out.println("outputEntity: " + outputEntity);
+        System.out.println("workType: " + workType);
+
+
+        String createContainer = "";
+        String executeContainer = "";
+        String deleteContainer = "";
+
+        Set<String> standContainer = new HashSet<>();
+        standContainer.add("pi");
+        standContainer.add("selectsort");
+        standContainer.add("levenshtein");
+        standContainer.add("kmp");
+
+        if(standContainer.contains(workType)){
+            executeContainer = indexService.realOperate(outputEntity);
+        }
+        else{
+//        创建单个任务的Container
+            createContainer = indexService.createSingleContainer(outputParams);
+//        执行单个任务的Container
+            if(createContainer.equals("success")){
+                executeContainer = indexService.realOperate(outputEntity);
+                //删除单个容器
+                deleteContainer = indexService.deleteSingleContainer(outputEntity);
+            }
+
+            System.out.println("createContainer:" + createContainer);
+            System.out.println("executeContainer: " + executeContainer);
+            System.out.println("deleteContainer:" + deleteContainer);
+        }
+
+        return executeContainer;
     }
 
     //获取真实环境中执行的总时间，能耗，成本
@@ -828,8 +871,122 @@ public class IndexController {
     //绑定任务页面
     @RequestMapping("CodeMirror")
     public String CodeMirror(){
-
+//        System.out.println(123);
         return "codeMirror";
+    }
+
+
+    //页面初始化
+    @RequestMapping(path = {"/CodeRun"}, method = RequestMethod.GET)
+    public String entry(Model model) {
+
+//        model.addAttribute("lastSource", defaultSource);
+        return "codeMirror";
+    }
+
+    //初始化代码
+    @RequestMapping("initCode")
+    @ResponseBody
+    public String initCode(@RequestParam("taskName") String taskName , @RequestParam("workflowName") String workflowName){
+//        System.out.println(taskName);
+
+        /*String className = "task_" + taskName;
+        String code_model = defaultSource.replace("Run",className);
+//        System.out.println(code_model);
+
+        return code_model;*/
+
+        String code_model = indexService.initCode(taskName , workflowName);
+        return code_model;
+
+    }
+
+    //初始化已有代码
+    @RequestMapping(value = "initExitCode")
+    @ResponseBody
+    public String initExitCode(@RequestParam("codeJson") String codeJson){
+
+        String res = indexService.initExitCode(codeJson);
+        return res;
+    }
+    /*@RequestMapping(path = {"/CodeRunResult"}, method = RequestMethod.POST)
+    public String runCode(@RequestParam("source") String source,
+                          @RequestParam("systemIn") String systemIn, Model model) {
+        String runResult = indexService.execute(source, systemIn);
+        runResult = runResult.replaceAll(System.lineSeparator(), "<br/>"); // 处理html中换行的问题
+
+        model.addAttribute("lastSource", source);
+        model.addAttribute("lastSystemIn", systemIn);
+        model.addAttribute("runResult", runResult);
+
+        System.out.println("source:" + source);
+        System.out.println("systemIn:" + systemIn);
+        System.out.println(runResult);
+        System.out.println("success");
+        return "codeMirror";
+    }*/
+
+    //验证用户提交代码
+    @RequestMapping(path = {"/CodeRunResult"}, method = RequestMethod.POST)
+    @ResponseBody
+    public String runCode(@RequestParam("source") String source , @RequestParam("systemIn") String systemIn) {
+        String runResult = indexService.execute(source, "");
+        runResult = runResult.replaceAll(System.lineSeparator(), "\n"); // 处理html中换行的问题
+
+
+//        System.out.println("source:" + source);
+//        System.out.println("systemIn:" + systemIn);
+        System.out.println(runResult);
+//        System.out.println("success");
+        return runResult;
+    }
+
+    /**
+     * 在DAG图中编辑任务节点执行的代码
+     */
+    @RequestMapping("DagEdit")
+    public String dagEdit(){
+
+        return "DagEdit";
+    }
+
+    /**
+     * 存储用户提交的代码
+     */
+    @RequestMapping(path = {"/submitCode"}, method = RequestMethod.POST)
+    @ResponseBody
+    public String submitCode(@RequestParam("codeJson") String codeJson){
+
+        String res = indexService.submitCode(codeJson);
+        return res;
+    }
+
+    //获取工作流中DAG图已编辑任务节点的所有节点名称
+    @RequestMapping(value = "getTaskList")
+    @ResponseBody
+    public String getTaskList(@RequestParam("taskListParam") String taskListParam){
+
+        String res = indexService.getTaskList(taskListParam);
+        return res;
+    }
+
+    //生成容器测试
+    @RequestMapping(value = "createContainer")
+    @ResponseBody
+    public String createContainer(@RequestParam("containerParam") String containerParam){
+
+        String res = indexService.createContainer(containerParam);
+        return res;
+    }
+
+    //生成容器测试
+    @RequestMapping(value = "containerSimulation")
+    @ResponseBody
+    public String containerSimulation(@RequestParam("json") String json){
+
+        String res = indexService.containerSimulation(json);
+
+        return res;
     }
 }
 

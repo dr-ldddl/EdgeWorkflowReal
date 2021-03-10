@@ -630,6 +630,11 @@ function initChart(){
     lineChart(outputList);
     ganttChart(outputList);
 
+    //初始化DAG图
+    var points = [{"name":"0","x":111,"y":250},{"name":"1","x":111,"y":750},{"name":"2","x":111,"y":1250},{"name":"3","x":111,"y":1750},{"name":"4","x":333,"y":166},{"name":"5","x":333,"y":499},{"name":"6","x":333,"y":1165},{"name":"7","x":333,"y":1498},{"name":"8","x":333,"y":832},{"name":"9","x":333,"y":1831},{"name":"10","x":555,"y":1000},{"name":"11","x":777,"y":1000},{"name":"12","x":999,"y":250},{"name":"13","x":999,"y":750},{"name":"14","x":999,"y":1250},{"name":"15","x":999,"y":1750},{"name":"16","x":1221,"y":1000},{"name":"17","x":1443,"y":1000},{"name":"18","x":1665,"y":1000},{"name":"19","x":1887,"y":1000}];
+    var links = [{"source":"0","target":"4"},{"source":"1","target":"5"},{"source":"0","target":"5"},{"source":"3","target":"6"},{"source":"0","target":"6"},{"source":"3","target":"7"},{"source":"1","target":"7"},{"source":"2","target":"8"},{"source":"3","target":"9"},{"source":"2","target":"9"},{"source":"6","target":"10"},{"source":"5","target":"10"},{"source":"4","target":"10"},{"source":"9","target":"10"},{"source":"8","target":"10"},{"source":"7","target":"10"},{"source":"10","target":"11"},{"source":"11","target":"12"},{"source":"0","target":"12"},{"source":"1","target":"13"},{"source":"11","target":"13"},{"source":"2","target":"14"},{"source":"11","target":"14"},{"source":"3","target":"15"},{"source":"11","target":"15"},{"source":"15","target":"16"},{"source":"14","target":"16"},{"source":"13","target":"16"},{"source":"12","target":"16"},{"source":"16","target":"17"},{"source":"17","target":"18"},{"source":"18","target":"19"}];
+    dagRelation(points , links);
+
 
 }
 
@@ -1161,7 +1166,7 @@ $(document).ready(function(){
             offset: "70px",
             cancel: function(){
 
-            }
+            },
         });
 
     });
@@ -1319,8 +1324,23 @@ $("#plan_tbody").on("click", ".run_sim", function(){
 
     //加载动画
     $("#sim_loading").css("display" , "block");
+
+    var runParam = eval("("+ json_para +")");
+    var assignType = runParam["assignType"];
+    if(assignType == "custom"){
+        //生成container images
+        // createContainers(json_para);
+
+        //执行容器仿真
+        var url = "containerSimulation";
+        containerSimulation(url , json_para);
+    }else{
+        var url = "simulation";
+        start(url,json_para);
+    }
+    //开始仿真
     var url = "simulation";
-    start(url,json_para);
+    // start(url,json_para);
     // $("#sim_loading").css("display" , "none");
 });
 
@@ -1436,6 +1456,7 @@ function start(url, json_para) {
         dataType:"JSON",
         success: function (res) {
             // console.log(res);
+            var dagRelations = res["dagRelations"];
             records = res["outputMap"];
             three_object = res["record"];
             $("#output").empty();
@@ -1457,6 +1478,12 @@ function start(url, json_para) {
                 if (content[0] == 5) content[0] = 'PSO';
                 if (content[0] == 6) content[0] = 'GA';
             }
+
+            //加载DAG图
+            var dagData = eval("("+dagRelations+")");
+            var points = dagData["points"];
+            var links = dagData["links"];
+            dagRelation(points, links);
 
             loadChart();
 
@@ -1797,10 +1824,401 @@ $("#output").change(function () {
         loadTable();
     }
 });
-
-
 //Real Enviorment按钮
 $("#realOperate").click(function(){
+    // 判断是否存在仿真数据
+    var text = $("#detail_tbody").find("tr:first").find("td:first").text();
+    if(text == "" || text == null){
+        layer.msg("There is no simulation data , Please simulate first!",
+            {icon: 2,offset:['50%', '40%'],time:3000,area:['420px','70px']});
+        return false;
+    }
+
+    //设置进度条
+    // layui.use('element', function(){
+    //     var $ = layui.jquery
+    //         ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+    //
+    //     //触发事件
+    //     var active = {
+    //         loading: function(othis){
+    //             var DISABLED = 'layui-btn-disabled';
+    //             if(othis.hasClass(DISABLED)) return;
+    //
+    //             //模拟loading
+    //             var n = 0, timer = setInterval(function(){
+    //                 n = n + Math.random()*10|0;
+    //                 if(n>100){
+    //                     n = 100;
+    //                     clearInterval(timer);
+    //                     othis.removeClass(DISABLED);
+    //                 }
+    //                 element.progress('demo', n+'%');
+    //             }, 300+Math.random()*1000);
+    //
+    //             othis.addClass(DISABLED);
+    //         }
+    //     };
+    //
+    //     $('.site-demo-active').on('click', function(){
+    //         var othis = $(this), type = $(this).data('type');
+    //         active[type] ? active[type].call(this, othis) : '';
+    //     });
+    // });
+    // var username = "ding";
+    // var planName = "test";
+    // var workflowName = "line3_3.xml";
+    var containerParam = {"username": username_real , "planName" : planName_real , "workflowName" : workflowName_real};
+    var key = $("#output").val();
+    var list = records[key];
+    /*var outputEntity = list[0];
+    $.ajax({
+        type: "POST",
+        url: "/realOperate",
+        data:JSON.stringify({containerParam: containerParam , outputEntity: outputEntity}),
+        dataType: "text",
+        async: false,
+        contentType:"application/json",
+        success: function (res) {
+            console.log(res);
+            return;
+        },
+        error: function(data){
+            console.log("error...");
+        }
+    });
+    return;*/
+
+
+
+    //定时执行单个任务
+    var list_real = [];
+    var currentIndex = 0;
+    var realTimeClData;
+    var detail_tbody = $("#detail_tbody");
+    var td_realTime = new Object();
+    var td_realCost = new Object();
+    var td_realStartTime = new Object();
+    var td_realFinishTime = new Object();
+    var td_realStatus_btn = new Object();
+
+
+    //禁用Real Enviorment按钮
+    var DISABLED = 'layui-btn-disabled';
+    $("#realOperate").addClass(DISABLED);
+    //显示进度条
+    $(".output_progress").css("display","block");
+
+    $("#successed_tbody").html("");
+    realTimeClData = setInterval(function(){
+        var outputEntity = list[currentIndex];
+        var jobId = outputEntity['jobId'];
+
+        /*$("#standby_tbody").find("tr:odd").each(function(){
+            var input = $(this).children("td").eq(6).find("input");
+            input.attr("class", "input_odd");
+            $(this).attr("background-color", "#ffffff");
+        });
+        $("#standby_tbody").find("tr:even").each(function(){
+            console.log("even");
+            var input = $(this).children("td").eq(6).find("input");
+            input.attr("class", "input_even");
+            $(this).attr("background-color", "#f2f2f2");
+        });*/
+
+        //standby中移除对象
+        var html = "";
+
+        var input_background = "";
+        $("#standby_tbody").find("tr").each(function(){
+
+            var jobId_td = $(this).children("td").eq(0).text();
+            var input = $(this).children("td").eq(6).find("input");
+            var trSeq = $(this).parent().find("tr").index($(this)[0]);
+
+            // if(trSeq%2 == 0){
+            //     $(this).css("background-color", "#FFFFFF");
+            //     input.attr("class", "input_even");
+            // }else{
+            //     $(this).css("background-color", "#F2F2F2");
+            //     input.attr("class","input_odd");
+            // }
+            if(jobId == jobId_td){
+                $(this).remove();
+
+                //running添加对象
+                var dataCenterId = outputEntity["dataCenterId"];
+                var vmId = outputEntity["vmId"];
+                var realStartTime = outputEntity["realStartTime"];
+                var realFinishTime = outputEntity["realFinishTime"];
+                var depth = outputEntity["depth"];
+                var realTime = outputEntity["realTime"];
+                var realCost = outputEntity["realCost"];
+                var parents = outputEntity["parents"];
+                parents = parents.substring(0, parents.length - 1);
+                var realStatus = outputEntity["realStatus"];
+                // console.log("realStatus" + realStatus);
+                if(realStartTime == undefined){
+                    realStartTime = "--";
+                }
+                if(realFinishTime == undefined){
+                    realFinishTime = "--";
+                }
+                if(realTime == undefined){
+                    realTime = "--";
+                }
+                if(realCost == undefined){
+                    realCost = "--";
+                }
+                if(dataCenterId == "cloud"){
+                    dataCenterId = "Cloud";
+                }else if(dataCenterId == "f-0"){
+                    dataCenterId = "Edge";
+                }else if(dataCenterId == "m-0-0"){
+                    dataCenterId = "End";
+                }
+
+                var realStatus_temp = "";
+                if(realStatus == "SUCCESS"){
+                    realStatus_temp = '<button class=\'btn_status_success\'></button>';
+                }else{
+                    realStatus_temp = '<button class=\'btn_status_failed\'></button>';
+                }
+                var temp_parent = '<td class="running_parents"><input class="input_even" value="'+ parents +'" onblur="parents_blur(this)" onfocus="parents_focus(this)"></td>';
+
+                html += "<tr>" +
+                    '<td class="running_job">'+ jobId +'</td>'+
+                    '<td class="running_vm">'+ vmId +'</td>'+
+                    '<td class="running_resource">'+ dataCenterId +'</td>'+
+                    '<td class="running_start">'+ realStartTime +'</td>'+
+                    '<td class="running_finish">'+ realFinishTime +'</td>'+
+                    '<td class="running_realTime">'+ realTime +'</td>'+
+                    '<td class="running_realCost">'+ realCost +'</td>'+
+                    '<td class="running_depth">'+ depth +'</td>'+
+                    temp_parent +
+                    '<td class="running_realStus">'+ realStatus_temp +'</td>'+
+                    '</tr>';
+
+                var html_standby = '';
+                html_standby += '<tr>'+
+                    '<td class="standby_job"></td>'+
+                    '<td class="standby_resource"></td>'+
+                    '<td class="standby_vm"></td>'+
+                    '<td class="standby_simTime"></td>'+
+                    '<td class="standby_simCost"></td>'+
+                    '<td class="standby_depth"></td>';
+
+                var temp = '';
+                if(currentIndex%2 == 0){
+                    temp = '<td class="standby_parents"><input class="input_even" value="" onblur="parents_blur(this)" onfocus="parents_focus(this)"></td>';
+                }else{
+                    temp = '<td class="standby_parents"><input class="input_odd" value="" onblur="parents_blur(this)" onfocus="parents_focus(this)"></td>';
+                }
+                html_standby += temp;
+                html_standby += '<td class="standby_simStus"></td>';
+                html_standby += '</tr>';
+                $("#standby_tbody").append(html_standby);
+            }
+
+            //设置standby的input背景色
+            input_background = $(this).css("background-color");
+            if(input_background == "rgb(242, 242, 242)"){
+                input_background = "rgb(0, 0, 0, 0)";
+            }else{
+                input_background = "rgb(242, 242, 242)";
+            }
+            input.css("background-color", input_background);
+            for (var i = 1; i < 10; i++) {
+                html += '<tr>'+
+                    '<td class="running_job"></td>'+
+                    '<td class="running_vm"></td>'+
+                    '<td class="running_resource"></td>'+
+                    '<td class="running_start"></td>'+
+                    '<td class="running_finish"></td>'+
+                    '<td class="running_realTime"></td>'+
+                    '<td class="running_realCost"></td>'+
+                    '<td class="running_depth"></td>';
+
+                var temp = '';
+                if(i%2 == 0){
+                    temp = '<td class="running_parents"><input class="input_even" value="" onblur="parents_blur(this)" onfocus="parents_focus(this)"></td>';
+                }else{
+                    temp = '<td class="running_parents"><input class="input_odd" value="" onblur="parents_blur(this)" onfocus="parents_focus(this)"></td>';
+                }
+                html += temp;
+                html += '<td class="running_realStus"></td>';
+                html += '</tr>';
+            }
+        });
+        $("#running_tbody").html(html);
+
+
+
+        // console.log("currentIndex:" + currentIndex);
+        detail_tbody.find("tr").each(function(){
+            var jobId_td = $(this).children("td").eq(0).text();
+            if(jobId == jobId_td){
+                var tr_current = $(this);
+                td_realStartTime = tr_current.children("td").eq(8);
+                td_realFinishTime = tr_current.children("td").eq(9);
+                td_realTime = tr_current.children("td").eq(5);
+                td_realCost = tr_current.children("td").eq(7);
+                td_realStatus_btn = tr_current.children("td").eq(13).find("button");
+
+            }
+        });
+
+        //设置进度条
+
+        /*var progress_per = '';
+        progress_per = ((currentIndex + 1)/(list.length)).toFixed(2);
+        console.log(progress_per);
+        progress_per = progress_per * 100 + "%";
+        console.log(progress_per);
+        layui.use('element', function(){
+            var $ = layui.jquery;
+            var element = layui.element;
+            element.progress('realProgress', progress_per);
+
+        });*/
+        var progress_per = '';
+        progress_per = ((currentIndex + 1)/(list.length))*100;
+        progress_per = progress_per.toFixed(2);
+        // console.log(progress_per);
+        $("#real_loading").css("display" , "block");
+        $("#operate_percent").text("Complete Percent: " + progress_per + "%");
+
+        $.ajax({
+            type: "POST",
+            url: "/realOperate",
+            data:JSON.stringify({containerParam: containerParam , outputEntity: outputEntity}),
+            dataType: "text",
+            async: false,
+            contentType:"application/json",
+            success: function (res) {
+                currentIndex++;
+
+                // console.log(res);
+                var res_obj = eval("("+res+")");
+                var real_item = res_obj["real_outputEntity"];
+                list_real.push(real_item);
+                var jobId = real_item["jobId"];
+                var realTime = real_item["realTime"];
+                var realCost = real_item["realCost"];
+                var realStartTime = real_item["realStartTime"];
+                var realFinishTime = real_item["realFinishTime"];
+
+                td_realStartTime.text(realStartTime);
+                td_realFinishTime.text(realFinishTime);
+                td_realCost.text(realCost);
+                td_realTime.text(realTime);
+                td_realStatus_btn.removeClass("btn_status_failed");
+                td_realStatus_btn.addClass("btn_status_success");
+
+                var vmId = real_item["vmId"];
+                var depth = real_item["depth"];
+                var parents = real_item["parents"];
+                parents = parents.substring(0, parents.length - 1);
+                var realStatus = real_item["realStatus"];
+                var dataCenterId = real_item["dataCenterId"];
+
+
+                if(realStartTime == undefined){
+                    realStartTime = "--";
+                }
+                if(realFinishTime == undefined){
+                    realFinishTime = "--";
+                }
+                if(realTime == undefined){
+                    realTime = "--";
+                }
+                if(realCost == undefined){
+                    realCost = "--";
+                }
+                if(dataCenterId == "cloud"){
+                    dataCenterId = "Cloud";
+                }else if(dataCenterId == "f-0"){
+                    dataCenterId = "Edge";
+                }else if(dataCenterId == "m-0-0"){
+                    dataCenterId = "End";
+                }
+
+                var realStatus_temp = "";
+                if(realStatus == "SUCCESS"){
+                    realStatus_temp = '<button class=\'btn_status_success\'></button>';
+                }else{
+                    realStatus_temp = '<button class=\'btn_status_failed\'></button>';
+                }
+
+                var temp_parent = "";
+                if(currentIndex%2 != 0){
+                    temp_parent = '<td class="running_parents"><input class="input_even" value="'+ parents +'" onblur="parents_blur(this)" onfocus="parents_focus(this)"></td>';
+                }else{
+                    temp_parent = '<td class="running_parents"><input class="input_odd" value="'+ parents +'" onblur="parents_blur(this)" onfocus="parents_focus(this)"></td>';
+                }
+                var successed_tbody = $("#successed_tbody");
+                var success_html = "";
+                success_html += "<tr>" +
+                    '<td class="running_job">'+ jobId +'</td>'+
+                    '<td class="running_vm">'+ vmId +'</td>'+
+                    '<td class="running_resource">'+ dataCenterId +'</td>'+
+                    '<td class="running_start">'+ realStartTime +'</td>'+
+                    '<td class="running_finish">'+ realFinishTime +'</td>'+
+                    '<td class="running_realTime>'+ realTime +'</td>'+
+                    '<td class="running_realCost">'+ realCost +'</td>'+
+                    '<td class="running_depth">'+ depth +'</td>'+
+                    temp_parent +
+                    '<td class="running_realStus">'+ realStatus_temp +'</td>'+
+                    '</tr>';
+                successed_tbody.append(success_html);
+
+                //执行成功取消定时器
+                if(currentIndex == (list.length)){
+                    // console.log("cleartimedata");
+                    clearInterval(realTimeClData);
+
+                    //加载表格
+                    loadTable();
+                    //清空running表格
+                    initRunning();
+                    //清空standby表格
+                    initStandBy();
+                    //解除Real Enviorment禁用
+                    $("#realOperate").removeClass(DISABLED);
+                    //隐藏进度条
+                    // layui.use('element', function(){
+                    //     var $ = layui.jquery;
+                    //     var element = layui.element;
+                    //     element.progress('realProgress', "0%");
+                    //
+                    // });
+                    // $(".output_progress").css("display","none");
+                    $("#real_loading").css("display" , "none");
+                    $("#operate_percent").text("");
+
+                    //重新绘制四个状态图
+                    getRealThreeObject(key , list_real);
+                    pieChart(list_real);
+                    lineChart(list_real);
+                    ganttChart(list_real);
+
+                }
+
+            },
+            error: function(data){
+                console.log("error...");
+                currentIndex++;
+            }
+        });
+    },2000);
+
+    records[key] = list_real;
+
+    return;
+});
+
+//Real Enviorment按钮
+$("#realOperate1").click(function(){
 
     // 判断是否存在仿真数据
     var text = $("#detail_tbody").find("tr:first").find("td:first").text();
@@ -1842,11 +2260,7 @@ $("#realOperate").click(function(){
     //     });
     // });
 
-    var key = $("#output").val();
-    var list = records[key];
-
     //定时执行单个任务
-
     var list_real = [];
     var currentIndex = 0;
     var realTimeClData;
@@ -2129,7 +2543,7 @@ $("#realOperate").click(function(){
 
                 //执行成功取消定时器
                 if(currentIndex == (list.length)){
-                    console.log("cleartimedata");
+                    // console.log("cleartimedata");
                     clearInterval(realTimeClData);
 
                     //加载表格
@@ -2176,11 +2590,16 @@ $("#realOperate").click(function(){
 
 });
 
-/*$("#test").click(function(){
-
-
-
-});*/
+$("#flushChildrenDag").click(function(){
+    var index = $("#childrenIndex").val();
+    var childrenBody = layer.getChildFrame('body', index);//获取子页面内容
+    // console.log("index:" + index);
+    // console.log(body);
+    childrenBody.find("#flushDag").click();
+});
+$("#test").click(function(){
+   console.log("test success");
+});
 
 $("#showDag").click(function(){
     var dagParam = $("#dagParam").val();
@@ -2292,3 +2711,239 @@ function parents_focus(obj){
 
 
 
+//生成container images
+function createContainers(json_para){
+    // console.log("createContainers");
+    // console.log(json_para);
+
+    var runParam = eval("("+ json_para +")");
+    var assignType = runParam["assignType"];
+    if(assignType == "standard"){
+        // console.log("standard");
+        return;
+    }else if(assignType == "custom"){
+        // console.log("custom");
+        var workflowPath = runParam["workflowPathParam"];
+        var username = workflowPath["username"];
+        var planName = workflowPath["planName"];
+        var workflowName = workflowPath["workflowName"];
+
+        // console.log("assignType:" + assignType);
+        // console.log("workflowPath:" + JSON.stringify(workflowPath));
+        // console.log("username:" + username);
+        // console.log("planName:" + planName);
+        // console.log("workflowName:" + workflowName);
+
+        //创建Containers
+        var containerParam = {"username": username , "planName" : planName , "workflowName" : workflowName};
+        $.ajax({
+            type: "POST",
+            url: "/createContainer",
+            data: {"containerParam" : JSON.stringify(containerParam)},
+            dataType: "text",
+            async: false,
+            success: function (data) {
+                console.log(data);
+            },
+            error: function(data){
+                console.log("error...");
+            }
+        });
+    }
+
+
+}
+
+//自定义simulation
+var codeResult = "";
+var username_real = "";
+var planName_real = "";
+var workflowName_real = "";
+var codeExecuteElems = "";
+function containerSimulation(url , json_para){
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {json: json_para},
+        async: true,
+        dataType:"JSON",
+        success: function (res) {
+            var executePlan = eval("("+json_para+")");
+            var workflowPathParam = executePlan["workflowPathParam"];
+            username_real = workflowPathParam["username"];
+            planName_real = workflowPathParam["planName"];
+            workflowName_real = workflowPathParam["workflowName"];
+            // console.log(username_real);
+            // console.log(planName_real);
+            // console.log(workflowName_real);
+            // console.log(res);
+            codeExecuteElems = res["codeExecuteElems"];
+            codeResult = res["codeResult"];
+            var dagRelations = res["dagRelations"];
+            // console.log("codeResult： " + codeResult);
+            // console.log(dagRelations);
+            records = res["outputMap"];
+            three_object = res["record"];
+            $("#output").empty();
+            for (var record in records) {
+                $("#output").append("<option value='"+record+"'>"+record+"</option>")
+            }
+
+            var pso_time = res["pso_time"];
+            var ga_time = res["ga_time"];
+            $("#output-time").text("PSO:"+pso_time+"ms GA:"+ga_time+"ms");
+
+            var list = res["record"];
+            for (var i=0; i<list.length; i++) {
+                var content = list[i];
+                if (content[0] == 1) content[0] = 'MINMIN';
+                if (content[0] == 2) content[0] = 'MAXMIN';
+                if (content[0] == 3) content[0] = 'FCFS';
+                if (content[0] == 4) content[0] = 'ROUNDROBIN';
+                if (content[0] == 5) content[0] = 'PSO';
+                if (content[0] == 6) content[0] = 'GA';
+            }
+
+            //加载DAG图
+            var dagData = eval("("+dagRelations+")");
+            var points = dagData["points"];
+            var links = dagData["links"];
+            dagRelation(points, links);
+
+            loadChart();
+
+            loadTable();
+            //关闭加载动画
+            // ajaxbg.hide();
+            $("#sim_loading").css("display" , "none");
+
+            //弹出柱状图
+            var head = ['product', 'Time', 'Energy', 'Cost'];
+            var list = res["record"];
+            var source = [];
+            source.push(head);
+            for (var i=0; i<list.length; i++) {
+                var content = list[i];
+                if (content[0] == 1) content[0] = 'MINMIN';
+                if (content[0] == 2) content[0] = 'MAXMIN';
+                if (content[0] == 3) content[0] = 'FCFS';
+                if (content[0] == 4) content[0] = 'ROUNDROBIN';
+                if (content[0] == 5) content[0] = 'PSO';
+                if (content[0] == 6) content[0] = 'GA';
+                source.push(list[i]);
+            }
+
+            $("#chart_content").text("");
+            $("#chart_content").text(JSON.stringify(source));
+            layer.open({
+                type: 2
+                , offset: "140px"
+                , title: "EdgeWorkflow Simulation Result"
+                , content: "/barChart"
+                , skin: 'title-style'
+                , area: ['1000px', '500px']
+                ,cancel: function(){
+                    // feedSetting();
+                    // ajaxbg.hide();
+                }
+            });
+        },
+        error: function(data,type){
+            console.log("error...");
+        }
+    });
+}
+
+//加载DAG图
+function dagRelation(points , links){
+    // console.log(points);
+    // console.log(links);
+    var option = {
+        title: {
+            text: 'DAG Run Result'
+        },
+        tooltip: {
+            enterable:true,//鼠标是否可进入提示框浮层中
+            formatter:formatterHover//修改鼠标悬停显示的内容
+
+        },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+            {
+                type: 'graph',
+                layout: 'none',
+                symbolSize: 20,
+                roam: true,
+                label: {
+                    show: true
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    fontSize: 20
+                },
+                data: points,
+                links: links,
+                lineStyle: {
+                    opacity: 0.9,
+                    width: 2,
+                    curveness: 0
+                }
+            }
+        ]
+    };
+
+    var dagChart = echarts.init(document.getElementById('dagCodeResult'));
+    dagChart.clear();
+    dagChart.setOption(option);
+
+    //DAG图中元素左击事件
+    /*dagChart.off("click");
+    dagChart.on("click" , function (elem) {
+        console.log(elem.dataIndex);
+        // console.log(elem.dataIndex);
+        // click(elem);
+    });*/
+
+}
+function formatterHover(params){
+    // console.log(params);
+    // console.log("codeResult:" + JSON.stringify(codeResult));
+
+    var dataType = params.dataType;
+    var name = params.name;
+    var result = codeResult[name.toLowerCase()];
+
+    if (result == undefined){
+        result = "--";
+    }
+    if(dataType == "node"){
+        return "<span>" + name + ": </span>"+
+            "<span>" + result + "</span>";
+    }
+
+    if (dataType == "edge"){
+        var data = params.data;
+        var source = data["source"];
+        var target = data["target"];
+        // console.log(source + "---" + target);
+        // console.log(codeExecuteElems);
+        var elem = "";
+        for (var j = 0; j < codeExecuteElems.length; j++) {
+            var mapItem = codeExecuteElems[j];
+            var mapItem_source = mapItem["source"];
+            var mapItem_target = mapItem["target"];
+            if ((mapItem_source == source) && (mapItem_target == target)){
+                elem = mapItem["elem"];
+                break;
+            }
+        }
+        if (elem == ""){
+            elem = "--";
+        }
+        return "<span>" + source + "->" + target + ": </span>"+
+            "<span>" + elem + "</span>";
+    }
+
+}
