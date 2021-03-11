@@ -76,11 +76,11 @@ import org.xml.sax.SAXException;
 public class IndexService {
     final static String[] algrithmStr = new String[]{"MINMIN","MAXMIN","FCFS","ROUNDROBIN","PSO","GA"};
 
-//    static boolean Flag = true;//表示需要画图
-//    static boolean Flag1 = true;//判断FogEnvironmentUI需不需要重新绘制
+    //static boolean Flag = true;//表示需要画图
+    //static boolean Flag1 = true;//判断FogEnvironmentUI需不需要重新绘制
     static List<FogDevice> fogDevices = new ArrayList<>();
     public static List<Double[]> record=new ArrayList<>();
-//    public static List<Double[]> record_double = new ArrayList<>();
+    //public static List<Double[]> record_double = new ArrayList<>();
     final static int numOfDepts = 1;
     final static int numOfMobilesPerDept = 1;
     static int nodeSize;
@@ -116,7 +116,7 @@ public class IndexService {
     @Value("${storagePath}")
     private String storagePath;
 
-//    static public Map<String, List<Job>> records = new HashMap<>();
+    //    static public Map<String, List<Job>> records = new HashMap<>();
     static public Map<String, List<OutputEntity>> outputMap = new HashMap<>();
     static public int cloudNumber = 1;
     static public int fogNumber = 1;
@@ -234,13 +234,13 @@ public class IndexService {
             wfEngine.clearFlag();
             fogDevices.removeAll(fogDevices);  //清除对象列表
             FogUtils.set1();
-//            Object[][] rowData = {};
-
+            //Object[][] rowData = {};
+            //
             // 创建一个表格，指定 所有行数据 和 表头
-//            table = new JTable(rowData, columnNames);
-//            table.getTableHeader().setForeground(Color.black);
-////				FitTableColumns(table);
-//            scrollPane.setViewportView(table);
+            //table = new JTable(rowData, columnNames);
+            //table.getTableHeader().setForeground(Color.black);
+            //FitTableColumns(table);
+            //scrollPane.setViewportView(table);
             wfEngine.updatebest.clear();
 
         } catch (Throwable e) {
@@ -258,9 +258,9 @@ public class IndexService {
         if (customPath == null || customPath.equals("")) {
             daxPath = xml_path + json.getString("daxPath");
         } else {
-//            daxPath = xml_path + customPath;
-//            daxPath = "E:\\dagXML\\" + customPath;
-//            System.out.println(dagxmlpath +"llllllllllllll");
+            //daxPath = xml_path + customPath;
+            //daxPath = "E:\\dagXML\\" + customPath;
+            //System.out.println(dagxmlpath +"llllllllllllll");
             daxPath = dagxmlpath +customPath;
             System.out.println(daxPath +"llllllllllllll");
         }
@@ -394,7 +394,7 @@ public class IndexService {
                 long averageTime = GetAverageTime(times);
                 times=null;
                 System.out.println("Average "+scheduler_method+" algorithm execution time = " + averageTime);
-//                displayTime(averageTime);
+                //displayTime(averageTime);
                 pso_time = averageTime;
                 System.out.println("Drawing "+scheduler_method+" iteration figure......");
             } else if (scheduler_method.equals("GA")) {
@@ -427,7 +427,7 @@ public class IndexService {
                 long averageTime = GetAverageTime(times);
                 times = null;
                 System.out.println("Average " + scheduler_method + " algorithm execution time = " + averageTime);
-//                displayTime(averageTime);
+                //displayTime(averageTime);
                 ga_time = averageTime;
                 System.out.println("Drawing " + scheduler_method + " iteration figure......");
             } else {
@@ -451,7 +451,7 @@ public class IndexService {
         retJson.put("mobileNumber", mobileNumber);
         retJson.put("fogNumber", fogNumber);
         retJson.put("cloudNumber", cloudNumber);
-//        record_double.clear();
+        //record_double.clear();
         DockerLink dockerLink = new DockerLink();
         dockerLink.setRealWorkLoad();
         /*if(realFlag.equals("1")){
@@ -463,7 +463,7 @@ public class IndexService {
                 e.printStackTrace();
             }
         }*/
-//        retJson.put("record_double" , record_double);
+        //retJson.put("record_double" , record_double);
 
         System.out.println("retJson:" + retJson);
 /*        for (Double[] item: record_double) {
@@ -509,7 +509,7 @@ public class IndexService {
                     System.out.println("Average offloading Strategy time = " + wfEngine.getAverageOffloadingTime());
                 long averageTime = GetAverageTime(times);times=null;
                 System.out.println("Average "+scheduler_method+" algorithm execution time = " + averageTime);
-//                displayTime(averageTime);
+                //displayTime(averageTime);
                 pso_time = averageTime;
                 System.out.println("Drawing "+scheduler_method+" iteration figure......");
             } else if (scheduler_method.equals("GA")) {
@@ -542,7 +542,7 @@ public class IndexService {
                 long averageTime = GetAverageTime(times);
                 times = null;
                 System.out.println("Average " + scheduler_method + " algorithm execution time = " + averageTime);
-//                displayTime(averageTime);
+                //displayTime(averageTime);
                 ga_time = averageTime;
                 System.out.println("Drawing " + scheduler_method + " iteration figure......");
             } else {
@@ -574,24 +574,24 @@ public class IndexService {
         System.out.println("Optimization objective : "+optimize_objective);
 
         //TODO:自定义工作流xml文件待完成
-//        if(XMLFile!=null){
-//            //自定义工作流xml文件
-//            daxPath = XMLFile.getPath();
-//            String path = XMLFile.getName();
-//            String str="";
-//            if(path != null && !"".equals(path)){
-//                for(int i=0;i<path.length();i++){
-//                    if(path.charAt(i)>=48 && path.charAt(i)<=57){
-//                        str+=path.charAt(i);
-//                    }
-//                }
-//            }
-//            nodeSize = Integer.parseInt(str);
-//        }
-//        else{//系统自带工作流xml文件
-//            daxPath="config/dax/"+inputTypeCb.getSelectedItem()+"_"+nodeSizeCb.getSelectedItem()+".xml";
-//            nodeSize = Integer.parseInt((String) nodeSizeCb.getSelectedItem());
-//        }
+        //if(XMLFile!=null){
+        //    //自定义工作流xml文件
+        //    daxPath = XMLFile.getPath();
+        //    String path = XMLFile.getName();
+        //    String str="";
+        //    if(path != null && !"".equals(path)){
+        //        for(int i=0;i<path.length();i++){
+        //            if(path.charAt(i)>=48 && path.charAt(i)<=57){
+        //                str+=path.charAt(i);
+        //            }
+        //        }
+        //    }
+        //    nodeSize = Integer.parseInt(str);
+        //}
+        //else{//系统自带工作流xml文件
+        //    daxPath="config/dax/"+inputTypeCb.getSelectedItem()+"_"+nodeSizeCb.getSelectedItem()+".xml";
+        //    nodeSize = Integer.parseInt((String) nodeSizeCb.getSelectedItem());
+        //}
 
         double deadline;
         try {
@@ -605,7 +605,7 @@ public class IndexService {
         List<Job> outputList0 = wfEngine.getJobsReceivedList();
         CloudSim.stopSimulation();
         Log.enable();
-//        printJobList(scheduler_method, outputList0);
+        //printJobList(scheduler_method, outputList0);
 
         List<OutputEntity> outputList = new ArrayList<>();
         for (int i=0; i<outputList0.size(); i++) {
@@ -619,9 +619,9 @@ public class IndexService {
             } else {
                 outputEntity.setTaskId(String.valueOf(job.getClassType()));
             }
-//            for (Task task : job.getTaskList()) {
-//                outputEntity.setJobId(String.valueOf(task.getCloudletId()));
-//            }
+            //for (Task task : job.getTaskList()) {
+            //    outputEntity.setJobId(String.valueOf(task.getCloudletId()));
+            //}
             DecimalFormat dft = new DecimalFormat("######0.00");
             outputEntity.setDataCenterId(job.getResourceName(job.getResourceId()));
             outputEntity.setVmId(String.valueOf(job.getVmId()));
@@ -656,8 +656,8 @@ public class IndexService {
             if (customType.equals("custom")){
                 if (!outputEntity.getTaskId().equals("Stage-in")){
                     outputEntity.setWorkType(workTypeToImage.get(JobId));
-//                    System.out.println("JobId:" + JobId);
-//                    System.out.println("workTypeToImage: " + workTypeToImage);
+                    //System.out.println("JobId:" + JobId);
+                    //System.out.println("workTypeToImage: " + workTypeToImage);
                 }
             }else{
                 for (String piItem: pi) {
@@ -702,11 +702,11 @@ public class IndexService {
 
             }
         });
-//        System.out.println("ddddd");
+        //System.out.println("ddddd");
         System.out.println(outputList);
         outputMap.put(curMethod, outputList);
 
-//            printJobList(outputList0);
+        //printJobList(outputList0);
         controller.print();
         double totalExecutionTime = 0.0;
         for (OutputEntity outputEntity : outputList) {
@@ -714,7 +714,7 @@ public class IndexService {
         }
 
         Double[] a = {getAlgorithm(scheduler_method), controller.TotalExecutionTime, controller.TotalEnergy, controller.TotalCost};
-//        Double[] a = {getAlgorithm(scheduler_method), totalExecutionTime, controller.TotalEnergy, controller.TotalCost};
+        //Double[] a = {getAlgorithm(scheduler_method), totalExecutionTime, controller.TotalEnergy, controller.TotalCost};
         record.add(a);
         return wfEngine.algorithmTime;
     }
@@ -789,7 +789,7 @@ public class IndexService {
              * Set a offloading Strategy for OffloadingEngine
              */
             switch (strategy) {
-//                case "All-in-Fog":
+                //case "All-in-Fog":
                 case "All-in-Edge":
                     wfEngine.getoffloadingEngine().setOffloadingStrategy(new OffloadingStrategyAllinFog());
                     break;
@@ -874,24 +874,24 @@ public class IndexService {
         double costPerStorage = 0.1; // the cost of using storage in this resource
         double costPerBw = 0.2;//每带宽的花费
 
-//        List<Long> GHzList = new ArrayList<>();//云中的主机
-//        List<Double> CostList = new ArrayList<>();
-//        for(JTextField textField : FEframe.DCMipsMap.get("cloud")){
-//            if(textField.getText().isEmpty())
-//                GHzList.add((long)10000);
-//            else
-//                GHzList.add(Long.valueOf(textField.getText()));
-//        }
-//        for(JTextField textField : FEframe.DCCostMap.get("cloud")){
-//            if(textField.getText().isEmpty())
-//                CostList.add(0.96);
-//            else
-//                CostList.add(Double.valueOf(textField.getText()));
-//        }
-//        cloudNumCb.setSelectedItem(String.valueOf(GHzList.size()));
-
-//        GHzList.add((long)1600);
-//        CostList.add(0.96);
+        //List<Long> GHzList = new ArrayList<>();//云中的主机
+        //List<Double> CostList = new ArrayList<>();
+        //for(JTextField textField : FEframe.DCMipsMap.get("cloud")){
+        //    if(textField.getText().isEmpty())
+        //        GHzList.add((long)10000);
+        //    else
+        //        GHzList.add(Long.valueOf(textField.getText()));
+        //}
+        //for(JTextField textField : FEframe.DCCostMap.get("cloud")){
+        //    if(textField.getText().isEmpty())
+        //        CostList.add(0.96);
+        //    else
+        //        CostList.add(Double.valueOf(textField.getText()));
+        //}
+        //cloudNumCb.setSelectedItem(String.valueOf(GHzList.size()));
+        //
+        //GHzList.add((long)1600);
+        //CostList.add(0.96);
 
         FogDevice cloud = createFogDevice("cloud", cloudMipsList.size(), cloudMipsList, cloudCostList,
                 40000, 100, 10000, 0, ratePerMips, 16*103, 16*83.25,costPerMem,costPerStorage,costPerBw); // creates the fog device Cloud at the apex of the hierarchy with level=0
@@ -910,24 +910,24 @@ public class IndexService {
         double costPerStorage = 0.1; // the cost of using storage in this resource
         double costPerBw = 0.1;//每带宽的花费
 
-//        List<Long> GHzList = new ArrayList<>();//雾中的主机
-//        List<Double> CostList = new ArrayList<>();
-//        for(JTextField textField : FEframe.DCMipsMap.get("fog")){
-////            if(textField.getText().isEmpty())
-////                GHzList.add((long)5000);
-////            else
-////                GHzList.add(Long.valueOf(textField.getText()));
-////        }
-////        for(JTextField textField : FEframe.DCCostMap.get("fog")){
-////            if(textField.getText().isEmpty())
-////                CostList.add(0.48);
-////            else
-////                CostList.add(Double.valueOf(textField.getText()));
-////        }
-////        edgeNumCb.setSelectedItem(String.valueOf(GHzList.size()));
-
-//        GHzList.add((long)1300);
-//        CostList.add(0.48);
+        //List<Long> GHzList = new ArrayList<>();//雾中的主机
+        //List<Double> CostList = new ArrayList<>();
+        //for(JTextField textField : FEframe.DCMipsMap.get("fog")){
+        //    if(textField.getText().isEmpty())
+        //        GHzList.add((long)5000);
+        //    else
+        //        GHzList.add(Long.valueOf(textField.getText()));
+        //}
+        //for(JTextField textField : FEframe.DCCostMap.get("fog")){
+        //    if(textField.getText().isEmpty())
+        //        CostList.add(0.48);
+        //    else
+        //        CostList.add(Double.valueOf(textField.getText()));
+        //}
+        //edgeNumCb.setSelectedItem(String.valueOf(GHzList.size()));
+        //
+        //GHzList.add((long)1300);
+        //CostList.add(0.48);
 
         FogDevice dept = createFogDevice("f-"+id, fogMipsList.size(), fogMipsList, fogCostList,
                 4000, 10000, 10000, 1, ratePerMips, 700, 30,costPerMem,costPerStorage,costPerBw);
@@ -948,19 +948,19 @@ public class IndexService {
         double costPerStorage = 0.1; // the cost of using storage in this resource
         double costPerBw = 0.3;//每带宽的花费
 
-//        List<Long> GHzList = new ArrayList<>();
-//        List<Double> CostList = new ArrayList<>();
-//        for(JTextField textField : FEframe.DCMipsMap.get("mobile")){
-//            CostList.add(0.0);
-//            if(textField.getText().isEmpty())
-//                GHzList.add((long)1000);
-//            else
-//                GHzList.add(Long.valueOf(textField.getText()));
-//        }
-//        mobileNumCb.setSelectedItem(String.valueOf(GHzList.size()));
+        /*List<Long> GHzList = new ArrayList<>();
+        List<Double> CostList = new ArrayList<>();
+        for(JTextField textField : FEframe.DCMipsMap.get("mobile")){
+            CostList.add(0.0);
+            if(textField.getText().isEmpty())
+                GHzList.add((long)1000);
+            else
+                GHzList.add(Long.valueOf(textField.getText()));
+        }
+        mobileNumCb.setSelectedItem(String.valueOf(GHzList.size()));
 
-//        GHzList.add((long)1000);
-//        CostList.add(0.0);
+        GHzList.add((long)1000);
+        CostList.add(0.0);*/
 
         FogDevice mobile = createFogDevice("m-"+id, mobileMipsList.size(), mobileMipsList, mobileCostList,
                 10000, 20*1024, 40*1024, 3, 0, 700, 30,costPerMem,costPerStorage,costPerBw);
@@ -1085,7 +1085,7 @@ public class IndexService {
     public int loginCheck(User user) {
         int flag = 0;
         String sql = "SELECT * FROM userinfo WHERE email ='" + user.getEmail() + "' AND password = '" + user.getPassword() +"'";
-//        System.out.println("sql:" + sql);
+        //System.out.println("sql:" + sql);
         List<User> userList = (List<User>) jdbcTemplate.query(sql, new RowMapper<User>() {
             @Override
             public User mapRow(ResultSet rs, int i) throws SQLException {
@@ -1098,7 +1098,7 @@ public class IndexService {
                 return user;
             }
         });
-//        System.out.println(userList);
+        //System.out.println(userList);
         //用户名，密码都正确
         if(userList.size() > 0){
             flag = 2;
@@ -1127,14 +1127,14 @@ public class IndexService {
         return flag;
     }
 
-//    用户注册
+    //用户注册
     public String register(User user) {
         String username = user.getUsername();
         String password = user.getPassword();
         String email = user.getEmail();
-//        String address = user.getAddress();
+        //String address = user.getAddress();
         String organization =user.getOrganization();
-//        String telnumber = user.getTelnumber();
+        //String telnumber = user.getTelnumber();
         String subscribe = user.getSubscribe();
         JSONArray xmlfiles =new JSONArray();
         JSONObject plan = new JSONObject();
@@ -1160,9 +1160,9 @@ public class IndexService {
         sql = "INSERT INTO userinfo (username,password,email,organization,subscribe,xmlfiles,plan) VALUES ('"
                 + username +"','"+ password + "','" + email + "','"
                 + organization+ "','" + subscribe +"','" + xmlfiles.toString() + "','" + plan.toString() +"')";
-//        System.out.println(sql);
+        //System.out.println(sql);
         int insert_flag = jdbcTemplate.update(sql);
-//        System.out.println(insert_flag);
+        //System.out.println(insert_flag);
         if (insert_flag == 1){
             return "success";
 
@@ -1174,9 +1174,8 @@ public class IndexService {
     //查询用户信息
     public User getUser(String email) {
 
-
         String sql = "SELECT * FROM userinfo WHERE email = '" + email + "'";
-//        System.out.println("sql:"+sql);
+        //System.out.println("sql:"+sql);
         List<User>  userList = (List<User>) jdbcTemplate.query(sql, new RowMapper<User>() {
             @Override
             public User mapRow(ResultSet rs, int i) throws SQLException {
@@ -1191,7 +1190,7 @@ public class IndexService {
                 return user;
             }
         });
-//        System.out.println("userlist" + userList);
+        //System.out.println("userlist" + userList);
         User user= userList.get(0);
        /* String xmlfiles = user.getXmlfiles();
         JSONArray files= new JSONArray();
@@ -1213,20 +1212,22 @@ public class IndexService {
 
     //记录访问次数
     public String updateCount(String ipAddress , String currentTime) {
-//        String username = visitCount.getUserName();
-//        String visitip = visitCount.getVisitIp();
-//        String visitaddress = visitCount.getVisitAddress();
-//        String visitdate = visitCount.getVisitDate();
-//
-//        String sql = "insert into visitcount(username,visitip,visitdate,visitaddress) values('" + username + "','" + visitip + "','" + visitdate + "','" + visitaddress + "')";
-//        int insert_flag = jdbcTemplate.update(sql);
-////        System.out.println("insert flag" + insert_flag);
-//        if (insert_flag == 1){
-//            return "success";
-//
-//        }else{
-//            return "failed";
-//        }
+        /*String username = visitCount.getUserName();
+        String visitip = visitCount.getVisitIp();
+        String visitaddress = visitCount.getVisitAddress();
+        String visitdate = visitCount.getVisitDate();
+
+        String sql = "insert into visitcount(username,visitip,visitdate,visitaddress) values('" + username + "','" + visitip + "','" + visitdate + "','" + visitaddress + "')";
+        int insert_flag = jdbcTemplate.update(sql);
+        System.out.println("insert flag" + insert_flag);
+        if (insert_flag == 1){
+            return "success";
+
+        }else{
+            return "failed";
+        }*/
+
+
         String sql = "insert into accesscount(visitip,visitdate) values('" + ipAddress + "','" + currentTime + "')";
         int insert_flag = jdbcTemplate.update(sql);
         if (insert_flag == 1) {
@@ -1238,7 +1239,7 @@ public class IndexService {
 
     }
     public JSONObject getVisitCount() {
-//        今天的日期
+        //今天的日期
         Date date=new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -1246,16 +1247,16 @@ public class IndexService {
         date = calendar.getTime();
         SimpleDateFormat format= new SimpleDateFormat("yyyy-MM-dd");
         String today = format.format(date);
-//        System.out.println("dateString:" + dateString);
-//        String today = dateString;
+        //System.out.println("dateString:" + dateString);
+        //String today = dateString;
 
-//        总访问次数
+        //总访问次数
         String sql_sum = "SELECT count(*) FROM accesscount";
-//        今日总访问次数
+        //今日总访问次数
         String sql_sum_today = "SELECT count(*) FROM accesscount WHERE visitdate LIKE '" + today +"%'";
 
-//        System.out.println(sql_sum);
-//        System.out.println(sql_sum_today);
+        //System.out.println(sql_sum);
+        //System.out.println(sql_sum_today);
         int sum = jdbcTemplate.queryForObject(sql_sum,Integer.class);
         int sum_today = jdbcTemplate.queryForObject(sql_sum_today,Integer.class);
 
@@ -1264,13 +1265,13 @@ public class IndexService {
         JSONObject json =new JSONObject();
         json.put("sum", sum);
         json.put("sum_today", sum_today);
-//        System.out.println("json:" + json.toJSONString());
+        //System.out.println("json:" + json.toJSONString());
         return json;
     }
 
     //获取系统版本信息
     public String getVersions() {
-       String sql = " SELECT * FROM systemversion";
+        String sql = " SELECT * FROM systemversion";
         List<SystemVersion>  versionList = (List<SystemVersion>) jdbcTemplate.query(sql, new RowMapper<SystemVersion>() {
             @Override
             public SystemVersion mapRow(ResultSet rs, int i) throws SQLException {
@@ -1282,7 +1283,7 @@ public class IndexService {
             }
         });
 
-//        System.out.println(versionList.toString());
+        //System.out.println(versionList.toString());
         return JSON.toJSONString(versionList);
 
     }
@@ -1320,7 +1321,7 @@ public class IndexService {
             }
         });
 
-//        System.out.println(JSON.toJSONString(developerList));
+        //System.out.println(JSON.toJSONString(developerList));
         return JSON.toJSONString(developerList);
     }
 
@@ -1517,7 +1518,7 @@ public class IndexService {
 
         //删除class文件
         String del_command = "cd " + path + "\n" +
-                "rm -rf " + className + ".class";
+                "rm -rf " + imageName + ".class";
         System.out.println(del_command);
         String del_res = "";
         try {
@@ -1620,7 +1621,7 @@ public class IndexService {
 
         //查询当前用户的所有plan
         String sql_select = "SELECT plan FROM userinfo WHERE email ='" + email + "'";
-//        System.out.println("sql_select:" + sql_select);
+        //System.out.println("sql_select:" + sql_select);
         String planResult_string =  jdbcTemplate.queryForObject(sql_select,String.class);
 
         JSONObject planResult_json = JSONObject.parseObject(planResult_string);
@@ -1682,8 +1683,8 @@ public class IndexService {
 
     //获得Dag图片
     public String getDag(String dagXml , String customXml){
-//        System.out.println("dagXml:" + dagXml);
-//        System.out.println("customXml:" + customXml);
+        //System.out.println("dagXml:" + dagXml);
+        //System.out.println("customXml:" + customXml);
         String filePath = "";
 
         List<String> points = new ArrayList<>();
@@ -1700,22 +1701,20 @@ public class IndexService {
         }
 
         // 得到XML文件
-//        String filePath = "E:\\workflow\\Montage_20.xml";
-//        List<String> points = ParseXML.getPoints(filePath);
-//        List<Map<String,String>> links = ParseXML.getLinks(filePath);
-//        System.out.println("points: " + points);
-//        System.out.println("links:" + links);
+        //String filePath = "E:\\workflow\\Montage_20.xml";
+        //List<String> points = ParseXML.getPoints(filePath);
+        //List<Map<String,String>> links = ParseXML.getLinks(filePath);
+        //System.out.println("points: " + points);
+        //System.out.println("links:" + links);
 
         DagGraphUtil dagGraphUtil = new DagGraphUtil(points, links);
-
-//        System.out.println(dagGraphUtil.drawDagGraph());
-//        System.out.println(dagGraphUtil.drawDagGraph().toString());
-
         JSONObject jsonObject = new JSONObject(dagGraphUtil.drawDagGraph());
-//        System.out.println(jsonObject.toJSONString());
+
+        //System.out.println(dagGraphUtil.drawDagGraph());
+        //System.out.println(dagGraphUtil.drawDagGraph().toString());
+        //System.out.println(jsonObject.toJSONString());
+
         return jsonObject.toJSONString();
-
-
     }
 
 
@@ -1832,8 +1831,6 @@ public class IndexService {
             return javacRes;
         }
 
-
-
         /*DiagnosticCollector<JavaFileObject> compileCollector = new DiagnosticCollector<>(); // 编译结果收集器
 
         // 编译源代码
@@ -1897,11 +1894,11 @@ public class IndexService {
         String taskName = jsonObject.getString("taskName");
         String code = jsonObject.getString("code");
 
-//        System.out.println("username:" + username);
-//        System.out.println("planName:" + planName);
-//        System.out.println("workflowName:" + workflowName);
-//        System.out.println("taskName:" + taskName);
-//        System.out.println("code:" + code);
+        //System.out.println("username:" + username);
+        //System.out.println("planName:" + planName);
+        //System.out.println("workflowName:" + workflowName);
+        //System.out.println("taskName:" + taskName);
+        //System.out.println("code:" + code);
 
         //校验代码
         String executeRes = this.execute(code , "");
@@ -1916,7 +1913,6 @@ public class IndexService {
         //如果输出参数数量符合要求，即生成java文件，反之，不生成。
         if((outputEdges == outputCount) || ((outputCount == 1) &&(outputEdges == 0))){
             //path--> 盘符\\用户名\\执行方案名\\工作流名称\\任务代码.java
-            //String path = "F:\\" + username + "\\" + planName + "\\" + workflowName + "\\";
             String path = storagePath + username + "/" + planName + "/" + workflowName + "/";
             System.out.println("submitCode:" + path);
             File file = new File(path);
@@ -1948,7 +1944,7 @@ public class IndexService {
 
     //获取工作流中DAG图已编辑任务节点的所有节点名称
     public String getTaskList(String taskListParam){
-//        System.out.println(taskListParam);
+        //System.out.println(taskListParam);
         JSONObject jsonObject = JSON.parseObject(taskListParam);
 
         String username = jsonObject.getString("username");
@@ -1956,7 +1952,6 @@ public class IndexService {
         String workflowName = jsonObject.getString("workflowName");
 
         //path--> 盘符\\用户名\\执行方案名\\工作流名称\\任务代码.java
-//        String path = "F:\\" + username + "\\" + planName + "\\" + workflowName + "\\";
         String path = storagePath + "/" + username + "/" + planName + "/" + workflowName + "/";
         File file = new File(path);
 
@@ -1966,14 +1961,14 @@ public class IndexService {
         //读取所有文件名
         String nameList[] = file.list();
         for (int i = 0; i < nameList.length; i++) {
-//            nameList[i] = ;
+            //nameList[i] = ;
             String temp = nameList[i].replaceAll("task_" , "").replaceAll(".java" , "");
             nameList[i] = temp;
         }
 
         JSONObject result = new JSONObject();
         result.put("taskList" , nameList);
-//        System.out.println(result);
+        //System.out.println(result);
         return result.toJSONString();
     }
 
@@ -1986,20 +1981,17 @@ public class IndexService {
             + "    }\n"
             + "}";
 
-    //初始化代碼
+    //初始化代码
     public String initCode(String taskName , String workflowName){
+
         String className = "task_" + taskName.toLowerCase();
         String code_model = defaultSource.replace("Run",className);
-//        System.out.println(code_model)
 
+        //加载节点之间的关系dagLinks,和必要的输入输出参数的数量要求
         dagLinks.clear();
-
-//        String filePath = storagePath + "dax/" + "Montage_20.xml";
         String filePath = dagxmlpath + workflowName;
         dagLinks = ParseXML.getCustomLinks(filePath);
 
-//        String filePath = storagePath + "dagXML/" + "line3_3.xml";
-//        links = ParseXML.getCustomLinks(filePath);
         String itemId = taskName;
         inputEdges = 0;
         outputEdges = 0;
@@ -2007,8 +1999,8 @@ public class IndexService {
             Map<String , String> linkmap = dagLinks.get(i);
             String source = linkmap.get("source");
             String target = linkmap.get("target");
-//            System.out.println("source:" + source);
-//            System.out.println("target:" + target);
+            //System.out.println("source:" + source);
+            //System.out.println("target:" + target);
             if (source.equals(itemId)){
                 outputEdges++;
             }
@@ -2017,11 +2009,12 @@ public class IndexService {
             }
 
         }
-//        System.out.println("links:" + dagLinks);
-//        System.out.println("input:" + inputEdges);
-//        System.out.println("output:" + outputEdges);
+        //System.out.println("links:" + dagLinks);
+        //System.out.println("input:" + inputEdges);
+        //System.out.println("output:" + outputEdges);
 
-        if ((inputEdges == 0) && (outputEdges == 0)){
+
+        if ((inputEdges == 0) && (outputEdges == 0)){//输入输出都为0
             code_model = defaultSource.replace("Run",className);
         }else{
 
@@ -2030,13 +2023,14 @@ public class IndexService {
             customSource += "    public static void main(String[] args) {\n";
             customSource += "        \n";
 
+            //输入参数数量大于0
             if(inputEdges > 0){
                 for (int i = 0; i < inputEdges; i++) {
                     customSource += "        String args" + i +" = args[" + i + "];\n";
                 }
                 customSource += "        \n";
             }
-
+            //输出参数数量大于0
             if(outputEdges > 0){
                 for (int i = 0; i < outputEdges; i++) {
                     customSource += "        String elem" + i +" = \"elem" + i + "\";\n";
@@ -2047,18 +2041,16 @@ public class IndexService {
                 customSource += "        \n";
             }
 
+            //输出参数数量等于0
             if(outputEdges == 0){
-                    customSource += "        String elem" + 0 +" = \"elem" + 0 + "\";\n";
-                    customSource += "        System.out.println(elem" + 0 +");\n";
+                customSource += "        String elem" + 0 +" = \"elem" + 0 + "\";\n";
+                customSource += "        System.out.println(elem" + 0 +");\n";
                 customSource += "        \n";
             }
             customSource += "    }\n";
             customSource += "}";
             code_model = customSource.replace("Run",className);
         }
-
-
-
         return code_model;
     }
 
@@ -2073,8 +2065,8 @@ public class IndexService {
         String taskName = jsonObject.getString("taskName");
         String fileName = "task_" + taskName + ".java";
 
+        //加载节点之间的关系dagLinks,和必要的输入输出参数的数量要求
         dagLinks.clear();
-//        String filePath = storagePath + "dax/" + "Montage_20.xml";
         String filePath = dagxmlpath + workflowName;
         dagLinks = ParseXML.getCustomLinks(filePath);
         String itemId = taskName;
@@ -2084,8 +2076,8 @@ public class IndexService {
             Map<String , String> linkmap = dagLinks.get(i);
             String source = linkmap.get("source");
             String target = linkmap.get("target");
-//            System.out.println("source:" + source);
-//            System.out.println("target:" + target);
+            //System.out.println("source:" + source);
+            //System.out.println("target:" + target);
             if (source.equals(itemId)){
                 outputEdges++;
             }
@@ -2094,20 +2086,19 @@ public class IndexService {
             }
 
         }
-//        System.out.println("links:" + dagLinks);
-//        System.out.println("input:" + inputEdges);
-//        System.out.println("output:" + outputEdges);
+        //System.out.println("links:" + dagLinks);
+        //System.out.println("input:" + inputEdges);
+        //System.out.println("output:" + outputEdges);
 
         //path--> 盘符\\用户名\\执行方案名\\工作流名称\\任务代码.java
-//        String path = "F:\\" + username + "\\" + planName + "\\" + workflowName + "\\" + fileName;
         String path = storagePath + "/" + username + "/" + planName + "/" + workflowName + "/" + fileName;
-//        System.out.println(path);
+        //System.out.println(path);
         File file = new File(path);
 
         if(!file.exists()){//如果文件夹不存在
             file.mkdirs();//创建文件夹
         }
-        //读取文本中内内容
+        //读取当前节点的代码
         BufferedReader bufferedReader = null;
         StringBuffer stringBuffer = new StringBuffer();
         try {
@@ -2129,103 +2120,11 @@ public class IndexService {
                 }
             }
         }
-//        System.out.println(stringBuffer.toString());
+        //System.out.println(stringBuffer.toString());
         return stringBuffer.toString();
     }
 
-    //生成容器测试
-    /*public String createContainer(String containerParam){
-        //参数
-        System.out.println(containerParam);
-        JSONObject jsonObject = JSON.parseObject(containerParam);
-
-        String username = jsonObject.getString("username");
-        String planName = jsonObject.getString("planName");
-        String workflowName = jsonObject.getString("workflowName");
-
-        System.out.println(username);
-        System.out.println(planName);
-        System.out.println(workflowName);
-
-
-        //path--> 盘符\\用户名\\执行方案名\\工作流名称\\任务代码.java
-        //String path = "F:\\" + username + "\\" + planName + "\\" + workflowName + "\\";
-        String path = storagePath + username + "/" + planName + "/" + workflowName + "/";
-        System.out.println("path:" + path);
-
-        File file = new File(path);
-        if(!file.exists()){//如果文件夹不存在
-            file.mkdirs();//创建文件夹
-        }
-        //连接docker
-        DockerLink dockerLink = new DockerLink();
-
-        String host =  "127.0.0.1";
-        int port = 22;
-        String user = "root";
-        String password = "root";
-
-        String nameList[] = file.list();
-        for (int i = 0; i < nameList.length; i++) {
-            System.out.println(nameList[i]);
-        }
-
-        //编译java文件,生成class文件
-        String command = "cd " + path + "\n" +
-                "javac " + "*.java";
-        System.out.println(command);
-        String res = "";
-        try {
-            res = dockerLink.exeCommand(host , port , user , password , command);
-        } catch (JSchException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("javac res:");
-        System.out.println(res);
-
-        //创建dockerfile文件
-        String className = nameList[0].replace("java" , "class");
-        String imageName = nameList[0].replace(".java" , "").toLowerCase();
-        String dockerfile = "dockerFile";
-        String dockerContext = "FROM java:8 \n" +
-                "COPY " + className +" " + className + "\n" +
-                "ENTRYPOINT [\"java\",\"" + imageName + "\"] \n";
-        boolean write_flag = false;
-        try{//异常处理
-            BufferedWriter bw=new BufferedWriter(new FileWriter(path + dockerfile));
-            bw.write(dockerContext);//在创建好的文件中写入代码
-            bw.close();//一定要关闭文件
-            write_flag = true;
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        //返回插入标志
-        if(write_flag){
-            System.out.println("create dockerfile success!");
-        }else{
-            System.out.println("create dockerfile failed!");
-        }
-
-        //生成docker image
-        String image_command = "cd " + path + "\n"
-                + "docker build -f " + dockerfile + " -t " + imageName + " .";
-        System.out.println("image_command:");
-        System.out.println(image_command);
-        String image_res = "";
-        try {
-            image_res = dockerLink.exeCommand(host , port , user , password , image_command);
-        } catch (JSchException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("image res:");
-        System.out.println(image_res);
-        return "success";
-    }*/
-
+    //生成容器
     public String createContainer(String containerParam){
         //获取参数
         System.out.println(containerParam);
@@ -2325,49 +2224,6 @@ public class IndexService {
             System.out.println(image_res);
             workTypeToImage.put(i + "" , imageName);
         }
-//        System.out.println("workTypeToImage:" + workTypeToImage);
-        //生成容器镜像
-        /*for (String className : classList) {
-            System.out.println(className);
-
-            //创建dockerfile文件
-            String imageName = className.replace(".class" , "").toLowerCase();
-            String dockerfile = "dockerFile";
-            String dockerContext = "FROM java:8 \n" +
-                    "COPY " + className +" " + className + "\n" +
-                    "ENTRYPOINT [\"java\",\"" + imageName + "\"] \n";
-            boolean write_flag = false;
-            try{//异常处理
-                BufferedWriter bw=new BufferedWriter(new FileWriter(path + dockerfile));
-                bw.write(dockerContext);//在创建好的文件中写入代码
-                bw.close();//一定要关闭文件
-                write_flag = true;
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-            //返回标志
-            if(write_flag){
-                System.out.println("create dockerfile success!");
-            }else{
-                System.out.println("create dockerfile failed!");
-            }
-
-            //生成docker image
-            String image_command = "cd " + path + "\n"
-                    + "docker build -f " + dockerfile + " -t " + imageName + " .";
-            System.out.println("image_command:");
-            System.out.println(image_command);
-            String image_res = "";
-            try {
-                image_res = dockerLink.exeCommand(host , port , user , password , image_command);
-            } catch (JSchException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("image res:");
-            System.out.println(image_res);
-        }*/
 
         //删除class文件
         String del_command = "cd " + path + "\n" +
@@ -2402,14 +2258,14 @@ public class IndexService {
         String workflowName = workflowPath.getString("workflowName");
         String custom = containerParam.getString("custom");
 
-        System.out.println("assignType:" + assignType);
-        System.out.println("username:" + username);
-        System.out.println("planName:" + planName);
-        System.out.println("workflowName:" + workflowName);
-        System.out.println("custom:" + custom);
+        //System.out.println("assignType:" + assignType);
+        //System.out.println("username:" + username);
+        //System.out.println("planName:" + planName);
+        //System.out.println("workflowName:" + workflowName);
+        //System.out.println("custom:" + custom);
 
         customType = assignType;
-        System.out.println("customType: " + customType);
+        //System.out.println("customType: " + customType);
         if(!custom.equals("")){
             workflowName = custom;
         }
@@ -2421,6 +2277,7 @@ public class IndexService {
         String user = "dr";
         String password = "dr";
 
+        //工作流中所有节点的java文件存储路径
         String path = storagePath + username + "/" + planName + "/" + workflowName + "/";
         System.out.println("path:" + path);
 
@@ -2482,11 +2339,12 @@ public class IndexService {
             float seconds = (endTime - startTime) / 1000F;
 
             executeTime.put(javaItem , seconds + "");
+            System.out.println("java class result:" + res);
             System.out.println(Float.toString(seconds) + " seconds.");
         }
         System.out.println(executeTime);
 
-        //复制临时xml文件
+        //复制DAG临时xml文件
         String tempXmlPath = storagePath + "tempXml/";
         file = new File(tempXmlPath);
         if(!file.exists()){//如果文件夹不存在
@@ -2505,7 +2363,6 @@ public class IndexService {
         }
 
         //更新DAG xml的runtime属性
-//        String tempXmlPath = "/home/dr/sim/" + "tempXml/";
         try {
             String domPath = tempXmlPath + workflowName;
             SAXBuilder builder = new SAXBuilder();
@@ -2540,9 +2397,6 @@ public class IndexService {
 
                 }
             }
-
-            //更改xml runtime属性
-
         }catch (Exception e) {
             e.printStackTrace();
             Log.printLine("Parsing Exception");
@@ -2555,75 +2409,10 @@ public class IndexService {
         //得到工作流的结构
         String dagRelations = getDag("" ,  workflowName);
 
-        //运行容器镜像
-        /*System.out.println("-----------------------------------------");
-        for (String javaName : javaList) {
-            System.out.println(javaName);
-
-            //获得image名称
-            String imageName = javaName.replace(".java" , "").toLowerCase();
-            //执行容器命令
-            String command = "docker run " + imageName;
-            System.out.println(command);
-
-            String res = "";
-            try {
-                res = dockerLink.exeCommand(host , port , user , password , command);
-            } catch (JSchException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("command res:");
-            System.out.println(res);
-
-        }*/
-
-        //删除容器镜像
-        /*System.out.println("-----------------------------------------");
-        for (String javaName : javaList) {
-            System.out.println(javaName);
-
-            //获得image名称
-            String imageName = javaName.replace(".java" , "").toLowerCase();
-            //执行容器命令
-            String command = "docker rmi -f " + imageName;
-            System.out.println(command);
-
-            String res = "";
-            try {
-                res = dockerLink.exeCommand(host , port , user , password , command);
-            } catch (JSchException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("command res:");
-            System.out.println(res);
-
-        }*/
-
-        //删除所有镜像
-        /*System.out.println("-----------------------------------------");
-        String command = "docker rm -f $(docker ps -aq)";
-        System.out.println(command);
-
-        String res = "";
-        try {
-            res = dockerLink.exeCommand(host , port , user , password , command);
-        } catch (JSchException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("command res:");
-        System.out.println(res);*/
-
-
-
         //开始仿真
-//        String json_string = "{\"nodeSize\":\"20\",\"daxPath\":\"Montage_20.xml\",\"planName\":\"example1\",\"custom\":\"\",\"pi\":[],\"kmp\":[\"0\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\",\"14\",\"15\",\"16\",\"17\",\"18\",\"19\",\"20\"],\"levenshtein\":[],\"selectsort\":[],\"cloudServer\":1,\"fogServer\":1,\"mobile\":1,\"setting_json\":{\"cloud_mips_list\":[1600],\"cloud_cost_list\":[0.96],\"fog_mips_list\":[1300],\"fog_cost_list\":[0.48],\"mobile_mips_list\":[1000],\"cloud_number\":1,\"fog_number\":1,\"mobile_number\":1,\"GA\":{\"GA-popsize\":20,\"GA-gmax\":100,\"GA-crossoverProb\":0.8,\"GA-mutationRate\":0.01,\"GA-repeat\":1},\"PSO\":{\"PSO-particleNum\":20,\"PSO-iterateNum\":100,\"PSO-c1\":1.37,\"PSO-c2\":1.37,\"PSO-w\":0.73,\"PSO-repeat\":1}},\"strategy\":\"\",\"alSet\":[\"MINMIN\",\"MAXMIN\",\"FCFS\",\"ROUNDROBIN\"],\"optimize_objective\":\"Time\",\"deadline\":\"\",\"editTime\":\"2020-11-06 10:42:01\"}";
-        String json_string = "{\"nodeSize\":\"20\",\"daxPath\":\"Montage_20.xml\",\"planName\":\"a\",\"custom\":\"\",\"assignType\":\"custom\",\"workflowPathParam\":{\"username\":\"me\",\"planName\":\"a\",\"workflowName\":\"Montage_20.xml\"},\"cloudServer\":1,\"fogServer\":1,\"mobile\":1,\"setting_json\":{\"cloud_mips_list\":[1600],\"cloud_cost_list\":[0.96],\"fog_mips_list\":[1300],\"fog_cost_list\":[0.48],\"mobile_mips_list\":[1000],\"cloud_number\":1,\"fog_number\":1,\"mobile_number\":1,\"GA\":{\"GA-popsize\":20,\"GA-gmax\":100,\"GA-crossoverProb\":0.8,\"GA-mutationRate\":0.01,\"GA-repeat\":1},\"PSO\":{\"PSO-particleNum\":20,\"PSO-iterateNum\":100,\"PSO-c1\":1.37,\"PSO-c2\":1.37,\"PSO-w\":0.73,\"PSO-repeat\":1}},\"strategy\":\"\",\"alSet\":[\"MINMIN\"],\"optimize_objective\":\"Time\",\"deadline\":\"\",\"editTime\":\"2021-01-23 12:17:19\"}";
+        String json_string = "";
+        //String json_string = "{\"nodeSize\":\"20\",\"daxPath\":\"Montage_20.xml\",\"planName\":\"example1\",\"custom\":\"\",\"pi\":[],\"kmp\":[\"0\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\",\"14\",\"15\",\"16\",\"17\",\"18\",\"19\",\"20\"],\"levenshtein\":[],\"selectsort\":[],\"cloudServer\":1,\"fogServer\":1,\"mobile\":1,\"setting_json\":{\"cloud_mips_list\":[1600],\"cloud_cost_list\":[0.96],\"fog_mips_list\":[1300],\"fog_cost_list\":[0.48],\"mobile_mips_list\":[1000],\"cloud_number\":1,\"fog_number\":1,\"mobile_number\":1,\"GA\":{\"GA-popsize\":20,\"GA-gmax\":100,\"GA-crossoverProb\":0.8,\"GA-mutationRate\":0.01,\"GA-repeat\":1},\"PSO\":{\"PSO-particleNum\":20,\"PSO-iterateNum\":100,\"PSO-c1\":1.37,\"PSO-c2\":1.37,\"PSO-w\":0.73,\"PSO-repeat\":1}},\"strategy\":\"\",\"alSet\":[\"MINMIN\",\"MAXMIN\",\"FCFS\",\"ROUNDROBIN\"],\"optimize_objective\":\"Time\",\"deadline\":\"\",\"editTime\":\"2020-11-06 10:42:01\"}";
+        //json_string = "{\"nodeSize\":\"20\",\"daxPath\":\"Montage_20.xml\",\"planName\":\"a\",\"custom\":\"\",\"assignType\":\"custom\",\"workflowPathParam\":{\"username\":\"me\",\"planName\":\"a\",\"workflowName\":\"Montage_20.xml\"},\"cloudServer\":1,\"fogServer\":1,\"mobile\":1,\"setting_json\":{\"cloud_mips_list\":[1600],\"cloud_cost_list\":[0.96],\"fog_mips_list\":[1300],\"fog_cost_list\":[0.48],\"mobile_mips_list\":[1000],\"cloud_number\":1,\"fog_number\":1,\"mobile_number\":1,\"GA\":{\"GA-popsize\":20,\"GA-gmax\":100,\"GA-crossoverProb\":0.8,\"GA-mutationRate\":0.01,\"GA-repeat\":1},\"PSO\":{\"PSO-particleNum\":20,\"PSO-iterateNum\":100,\"PSO-c1\":1.37,\"PSO-c2\":1.37,\"PSO-w\":0.73,\"PSO-repeat\":1}},\"strategy\":\"\",\"alSet\":[\"MINMIN\"],\"optimize_objective\":\"Time\",\"deadline\":\"\",\"editTime\":\"2021-01-23 12:17:19\"}";
         json_string = json;
         JSONObject json1 = JSON.parseObject(json_string);
         System.out.println(json1);
@@ -2716,7 +2505,6 @@ public class IndexService {
         retJson.put("codeResult" , codeResult);
         retJson.put("dagRelations" , dagRelations);
         dockerLink.setRealWorkLoad();
-//        System.out.println("workTypeToImage" + workTypeToImage);
 
         System.out.println("retJson:" + retJson);
 
@@ -2724,55 +2512,55 @@ public class IndexService {
         deleteClass(path);
 
         //删除容器镜像
-//        deleteContainer(path);
+        //deleteContainer(path);
 
         return retJson.toJSONString();
     }
 
     //删除class文件
-     private void deleteClass(String path){
+    private void deleteClass(String path){
 
-         //连接docker
-         DockerLink dockerLink = new DockerLink();
-         String host =  "127.0.0.1";
-         int port = 22;
-         String user = "dr";
-         String password = "dr";
+        //连接docker
+        DockerLink dockerLink = new DockerLink();
+        String host =  "127.0.0.1";
+        int port = 22;
+        String user = "dr";
+        String password = "dr";
 
         //获得所有文件,筛选出class文件
-         File file = new File(path);
-         String fileList[] = file.list();
-         List<String> classList = new ArrayList<String>();
-         for (int i = 0; i < fileList.length; i++) {
-             String classFile = fileList[i];
-             if(classFile.endsWith(".class")){
-                 classList.add(classFile);
-             }
-         }
-         //删除class文件
-         String delClassCommand = "cd " + path + "\n" +
-                 "rm -rf " + "*.class";
-         System.out.println(delClassCommand);
-         String delClassRes = "";
-         try {
-             delClassRes = dockerLink.exeCommand(host , port , user , password , delClassCommand);
-         } catch (JSchException e) {
-             e.printStackTrace();
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-         System.out.println("delete Class res:");
-         System.out.println(delClassRes);
-     }
+        File file = new File(path);
+        String fileList[] = file.list();
+        List<String> classList = new ArrayList<String>();
+        for (int i = 0; i < fileList.length; i++) {
+            String classFile = fileList[i];
+            if(classFile.endsWith(".class")){
+                classList.add(classFile);
+            }
+        }
+        //删除class文件
+        String delClassCommand = "cd " + path + "\n" +
+                "rm -rf " + "*.class";
+        System.out.println(delClassCommand);
+        String delClassRes = "";
+        try {
+            delClassRes = dockerLink.exeCommand(host , port , user , password , delClassCommand);
+        } catch (JSchException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("delete Class res: " + delClassRes);
+    }
 
-     //删除容器和镜像
-     private void deleteContainer(String path){
+    //删除容器和镜像
+    private void deleteContainer(String path){
+
         //连接docker
-         DockerLink dockerLink = new DockerLink();
-         String host =  "127.0.0.1";
-         int port = 22;
-         String user = "dr";
-         String password = "dr";
+        DockerLink dockerLink = new DockerLink();
+        String host =  "127.0.0.1";
+        int port = 22;
+        String user = "dr";
+        String password = "dr";
 
         //获得所有文件,筛选出java文件
         File file = new File(path);
@@ -2785,50 +2573,46 @@ public class IndexService {
             }
         }
         Collections.sort(javaList);
-        System.out.println(javaList);
+        //System.out.println(javaList);
 
         String containerNames = "";
-         for (String javaName : javaList) {
-             //获得container名称
-             String containerName = javaName.replace(".java" , "").toLowerCase();
-             containerNames += containerName + " ";
+        for (String javaName : javaList) {
+            //获得container名称
+            String containerName = javaName.replace(".java" , "").toLowerCase();
+            containerNames += containerName + " ";
 
-         }
-         containerNames = containerNames.substring(0 , containerNames.length() - 1);
-         System.out.println("containerNames:" + containerNames);
+        }
+        containerNames = containerNames.substring(0 , containerNames.length() - 1);
+        System.out.println("containerNames:" + containerNames);
 
-         //执行容器命令
-         String delContainerCommand = "docker rmi -f " + containerNames;
-         System.out.println(delContainerCommand);
+        //执行容器命令
+        String delContainerCommand = "docker rmi -f " + containerNames;
+        System.out.println(delContainerCommand);
+        String delContainerRes = "";
+        try {
+            delContainerRes = dockerLink.exeCommand(host , port , user , password , delContainerCommand);
+        } catch (JSchException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("delContainerCommand res: " + delContainerRes);
 
-         String delContainerRes = "";
-         try {
-             delContainerRes = dockerLink.exeCommand(host , port , user , password , delContainerCommand);
-         } catch (JSchException e) {
-             e.printStackTrace();
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-         System.out.println("delContainerCommand res:");
-         System.out.println(delContainerRes);
+        //删除镜像
+        String delImageCommand = "docker rm -f $(docker ps -aq)";
+        System.out.println(delImageCommand);
+        String delImageRes = "";
+        try {
+            delImageRes = dockerLink.exeCommand(host , port , user , password , delImageCommand);
+        } catch (JSchException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("delImageCommand res: " + delImageRes);
+    }
 
-         //删除镜像
-         String delImageCommand = "docker rm -f $(docker ps -aq)";
-         System.out.println(delImageCommand);
-
-         String delImageRes = "";
-         try {
-             delImageRes = dockerLink.exeCommand(host , port , user , password , delImageCommand);
-         } catch (JSchException e) {
-             e.printStackTrace();
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-         System.out.println("delImageCommand res:");
-         System.out.println(delImageRes);
-     }
-
-    //容器执行过程中参数解析
+    //容器仿真过程中参数解析
     private void containerSimParseParams(JSONObject json) {
         //主界面设置
         strategy = json.getString("strategy");
@@ -2841,15 +2625,7 @@ public class IndexService {
 
         daxPath = storagePath + "tempXml/" + "temp.xml";
         System.out.println("daxPath:" + daxPath);
-        /*if (customPath == null || customPath.equals("")) {
-            daxPath = storagePath + json.getString("daxPath");
-        } else {
-//            daxPath = xml_path + customPath;
-//            daxPath = "E:\\dagXML\\" + customPath;
-//            System.out.println(dagxmlpath +"llllllllllllll");
-            daxPath = dagxmlpath +customPath;
-            System.out.println(daxPath +"llllllllllllll");
-        }*/
+
         nodeSize = json.getInteger("nodeSize");
         deadlineString = json.getString("deadline");
         JSONArray arr = json.getJSONArray("alSet");
@@ -2863,12 +2639,8 @@ public class IndexService {
 
     }
 
-    //执行工作流代码，返回结果
+    //执行自定义工作流代码，返回结果
     private Map<String , String> dagCodeRunRes(String username , String planName , String workflowName){
-//        String assignType = "custom";
-//        username = "me";
-//        planName = "aa";
-//        workflowName = "Montage_20.xml";
 
         //连接docker
         DockerLink dockerLink = new DockerLink();
@@ -2877,44 +2649,23 @@ public class IndexService {
         String user = "dr";
         String password = "dr";
 
+        //工作流所有节点的代码存储路径
         String path = storagePath + username + "/" + planName + "/" + workflowName + "/";
-//        System.out.println("path:" + path);
+        //System.out.println("path:" + path);
 
         List<Map<String,String>> links = new ArrayList<>();
         List<String> points = new ArrayList<>();
+        //静态变量清除上一次存储的数据
         codeExecuteRes.clear();
         dagLinks.clear();
         codeExecuteElems.clear();
-//        String filePath = storagePath + "dax/" + "Montage_20.xml";
+
+        //工作流DAG存储路径,links存储节点关系，points存储节点名称
         String filePath = dagxmlpath + workflowName;
         links = ParseXML.getCustomLinks(filePath);
         points = ParseXML.getCustomPoints(filePath);
         dagLinks = links;
 
-
-//        String filePath = storagePath + "dagXML/" + "line3_3.xml";
-//        links = ParseXML.getCustomLinks(filePath);
-        /*String itemId = "0";
-        int input = 0;
-        int output = 0;
-        for (int i = 0; i < links.size(); i++) {
-            Map<String , String> linkmap = links.get(i);
-            String source = linkmap.get("source");
-            String target = linkmap.get("target");
-//            System.out.println("source:" + source);
-//            System.out.println("target:" + target);
-            if (source.equals(itemId)){
-                output++;
-            }
-            if (target.equals(itemId)){
-                input++;
-            }
-
-        }*/
-//        System.out.println("links:" + links);
-//        System.out.println("input:" + input);
-//        System.out.println("output:" + output);
-//        System.out.println(points);
 
         DagGraphUtil dagGraphUtil = new DagGraphUtil(points, links);
         JSONObject jsonObject = new JSONObject(dagGraphUtil.drawDagGraph());
@@ -2922,20 +2673,16 @@ public class IndexService {
         //point集合
         List<Map<String,Integer>> points_map = new ArrayList<>();
         points_map = (List)jsonObject.get("points");
-
         //所有x坐标
         ArrayList<Integer> x_arrays = new ArrayList<>();
-
-        //每个任务的运行结果
+        //每个任务节点的运行结果
         Map<String , String> codeResult = new HashMap<String , String>();
 
-        //先编译java文件
+        //编译java文件
         String javacCommand = "cd " + path + "\n" +
                 "javac *.java";
-
-//        System.out.println(javacCommand);
+        //System.out.println(javacCommand);
         String javacRes = "";
-
         try {
             javacRes = dockerLink.exeCommand(host , port , user , password , javacCommand);
         } catch (JSchException e) {
@@ -2947,8 +2694,6 @@ public class IndexService {
         String itemId = "";
         int input = 0;
         int output = 0;
-//        System.out.println(links);
-//        System.out.println(points_map);
         workTypeToImage.clear();
         for (int i = 0; i < points_map.size(); i++) {
             Map<String , Integer> map = points_map.get(i);
@@ -2966,7 +2711,9 @@ public class IndexService {
                 }
             }
 
+            //存储工作流中JobId和Container(节点名称)的对应关系
             workTypeToImage.put(i + "" , "task_" + name);
+
             //获得当前节点的输入参数数量
             itemId = name;
             input = 0;
@@ -2983,14 +2730,14 @@ public class IndexService {
                 }
 
             }
-//            System.out.println("input:" + input);
+            //System.out.println("input:" + input);
 
 
-            //没有输入参数input==0
+            //没有输入参数:input==0
             if (input == 0){
                 String javaCommand = "cd " + path + "\n" +
                         "java " + "task_" + name;
-//                System.out.println("javaCommand:" + javaCommand);
+                //System.out.println("javaCommand:" + javaCommand);
 
                 String javaRes = "";
                 try {
@@ -3000,9 +2747,13 @@ public class IndexService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                //存储执行结果
                 codeResult.put(name , javaRes);
                 codeExecuteRes.put(name.toLowerCase() , javaRes);
             }else{//有输入参数
+
+                //获取当前节点的所有父节点，并排序
                 List<String> sources = new ArrayList<>();
                 String elems = "";
                 for (int j = 0; j < links.size(); j++) {
@@ -3014,14 +2765,15 @@ public class IndexService {
                         sources.add(source);
                     }
                 }
-//                System.out.println(itemId);
                 sources.sort(new Comparator<String>() {
                     @Override
                     public int compare(String s1, String s2) {
                         return s1.compareTo(s2);
                     }
                 });
-//                System.out.println("sources:" + sources);
+                //System.out.println("sources:" + sources);
+
+                //根据父节点和当前节点的关系，获取父节点的参数
                 String elem = "";
                 for (int j = 0; j < sources.size(); j++) {
                     String sourceItem = sources.get(j);
@@ -3055,7 +2807,7 @@ public class IndexService {
                             }
                         }
                     });
-//                    System.out.println(targetArray);
+                    //System.out.println(targetArray);
 
                     int index = targetArray.indexOf(itemId);
                     elem = temp.split(",")[index];
@@ -3068,12 +2820,12 @@ public class IndexService {
                     codeExecuteElems.add(linkResult);
 
                 }
-//                System.out.println("elems:" + elems);
-                System.out.println("codeExecuteElems:" + codeExecuteElems);
+                //System.out.println("elems:" + elems);
+                //System.out.println("codeExecuteElems:" + codeExecuteElems);
 
                 String javaCommand = "cd " + path + "\n" +
                         "java " + "task_" + name + elems;
-//                    System.out.println("javaCommand:" + javaCommand);
+                //System.out.println("javaCommand:" + javaCommand);
 
                 String javaRes = "";
                 try {
@@ -3083,13 +2835,15 @@ public class IndexService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-//                    System.out.println(javacRes);
+                //System.out.println(javacRes);
                 codeResult.put(name , javaRes);
                 codeExecuteRes.put(name.toLowerCase() , javaRes);
             }
 
         }
-//        System.out.println("codeResult:" + codeResult);
+        //System.out.println("codeResult:" + codeResult);
+
+        //获取最后一个节点的执行结果
         String dagCodeRunRes = "";
         for (int i = 0; i < points_map.size(); i++) {
             Map<String, Integer> map = points_map.get(i);
@@ -3102,6 +2856,7 @@ public class IndexService {
                     name = (map.get(key) + "").toLowerCase();
                 }
             }
+
             //判断是否为最终节点output=0
             output = input = 0;
             for (int j = 0; j < links.size(); j++) {
@@ -3115,7 +2870,6 @@ public class IndexService {
                 if (target.equals(name)){
                     input++;
                 }
-
             }
             if (output == 0){
                 dagCodeRunRes = codeResult.get(name);
@@ -3125,699 +2879,11 @@ public class IndexService {
         System.out.println("codeResult:" + codeResult);
         System.out.println("dagCodeRunRes:" + dagCodeRunRes);;
 
-//        System.out.println("workTypeToImage:" + workTypeToImage);
-//        System.out.println("customType:" + customType);
-//        return dagCodeRunRes;
+        //System.out.println("workTypeToImage:" + workTypeToImage);
+        //System.out.println("customType:" + customType);
+        //return dagCodeRunRes;
         return codeResult;
     }
 
-    @Test
-    public void containerSimTest(){
-
-        String assignType = "custom";
-        String username = "me";
-        String planName = "aa";
-        String workflowName = "Montage_20.xml";
-
-//        System.out.println(assignType);
-//        System.out.println(username);
-//        System.out.println(planName);
-//        System.out.println(workflowName);
-
-        //连接docker
-        DockerLink dockerLink = new DockerLink();
-        String host =  "127.0.0.1";
-        int port = 22;
-        String user = "dr";
-        String password = "dr";
-
-        String storagePath = "/home/dr/sim/";
-        String path = storagePath + username + "/" + planName + "/" + workflowName + "/";
-//        System.out.println("path:" + path);
-
-        //获得所有文件,筛选出java文件
-        /*File file = new File(path);
-        String fileList[] = file.list();
-        List<String> javaList = new ArrayList<String>();
-        for (int i = 0; i < fileList.length; i++) {
-            String javaFile = fileList[i];
-            if(javaFile.endsWith(".java")){
-                javaList.add(javaFile);
-            }
-        }
-        Collections.sort(javaList);
-        System.out.println(javaList);*/
-
-        //编译java文件,生成class文件
-        /*String command = "cd " + path + "\n" +
-                "javac " + "*.java";
-        System.out.println(command);
-        String res = "";
-        try {
-            res = dockerLink.exeCommand(host , port , user , password , command);
-        } catch (JSchException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("javac res:");
-        System.out.println(res);*/
-
-        //获得所有文件,筛选出class文件
-        /*List<String> classList = new ArrayList<String>();
-        for (int i = 0; i < fileList.length; i++) {
-            String classFile = fileList[i];
-            if(classFile.endsWith(".class")){
-                classList.add(classFile);
-            }
-        }*/
-
-        //执行每个class文件，保存执行时间
-        /*Map<String , String> executeTime = new HashMap<String , String>();
-        for (int i = 0; i < javaList.size(); i++) {
-            String javaItem = javaList.get(i).toString().replace(".java" , "");
-            command = "cd " + path + "\n" +
-                    "java " + javaItem + "";
-            System.out.println(command);
-            res = "";
-
-            long startTime = System.currentTimeMillis();
-            try {
-                res = dockerLink.exeCommand(host , port , user , password , command);
-            } catch (JSchException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            long endTime = System.currentTimeMillis();
-            float seconds = (endTime - startTime) / 1000F;
-
-            executeTime.put(javaItem , seconds + "");
-            System.out.println(Float.toString(seconds) + " seconds.");
-        }
-        System.out.println(executeTime);*/
-
-        //复制临时xml文件
-        /*String tempXmlPath = "/home/dr/sim/" + "tempXml/";
-        file = new File(tempXmlPath);
-        if(!file.exists()){//如果文件夹不存在
-            file.mkdir();//创建文件夹
-        }
-
-        String copyCommand = "cp" + " " + "/home/dr/sim/dax/" + workflowName + " " + tempXmlPath;
-        System.out.println(copyCommand);
-        res = "";
-        try {
-            res = dockerLink.exeCommand(host , port , user , password , copyCommand);
-        } catch (JSchException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        //更新DAG xml的runtime属性
-        /*try {
-            String domPath = tempXmlPath + workflowName;
-            SAXBuilder builder = new SAXBuilder();
-            //parse using builder to get DOM representation of the XML file
-            Document dom = builder.build(domPath);
-            Element root = dom.getRootElement();
-            List<Element> domItemList = root.getChildren();
-            System.out.println("domItemList:" + domItemList.toString());
-            for (Element node : domItemList) {
-                switch (node.getName().toLowerCase()) {
-                    case "job":
-                        String id = node.getAttributeValue("id");
-                        int id_int = Integer.parseInt(id.replace("ID" , ""));
-                        String name = node.getAttributeValue("name");
-                        String runtime = node.getAttributeValue("runtime");
-                        System.out.println("id_int:" + id_int);
-                        System.out.println("name:" + name);
-                        System.out.println("runtime:" + runtime);
-
-                        runtime = executeTime.get("task_"+ id_int);
-                        System.out.println("executeTimeItem:" + runtime);
-                        node.setAttribute("runtime",runtime);
-                        System.out.println(node.getAttributeValue("runtime"));
-
-                        break;
-
-                }
-            }
-            XMLOutputter  outputter = new XMLOutputter();
-            Format format = outputter.getFormat();
-            format.setEncoding("GBK");
-            format.setIndent("    ");
-            outputter.setFormat(format);
-//            outputter.output(dom , new FileWriter(tempXmlPath + workflowName));
-            outputter.output(dom , new FileWriter(tempXmlPath + "temp.xml"));
-            System.out.println("xml edit success");
-            //更改xml runtime属性
-
-        }catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("Parsing Exception");
-        }*/
-
-        List<Map<String,String>> links = new ArrayList<>();
-        List<String> points = new ArrayList<>();
-
-        String filePath = storagePath + "dax/" + "Montage_20.xml";
-        links = ParseXML.getLinks(filePath);
-        points = ParseXML.getPoints(filePath);
-
-
-//        String filePath = storagePath + "dagXML/" + "line3_3.xml";
-//        links = ParseXML.getCustomLinks(filePath);
-        String itemId = "0";
-        int input = 0;
-        int output = 0;
-        for (int i = 0; i < links.size(); i++) {
-            Map<String , String> linkmap = links.get(i);
-            String source = linkmap.get("source");
-            String target = linkmap.get("target");
-//            System.out.println("source:" + source);
-//            System.out.println("target:" + target);
-            if (source.equals(itemId)){
-                output++;
-            }
-            if (target.equals(itemId)){
-                input++;
-            }
-
-        }
-//        System.out.println("links:" + links);
-//        System.out.println("input:" + input);
-//        System.out.println("output:" + output);
-
-//        System.out.println("------------------------------------------------------");
-//        System.out.println(points);
-
-        DagGraphUtil dagGraphUtil = new DagGraphUtil(points, links);
-
-        JSONObject jsonObject = new JSONObject(dagGraphUtil.drawDagGraph());
-
-        //point集合
-        List<Map<String,Integer>> points_map = new ArrayList<>();
-        points_map = (List)jsonObject.get("points");
-
-        //所有x坐标
-        ArrayList<Integer> x_arrays = new ArrayList<>();
-
-        //每个任务的运行结果
-        Map<String , String> codeResult = new HashMap<String , String>();
-
-        //先编译java文件
-        String javacCommand = "cd " + path + "\n" +
-                "javac *.java";
-
-//        System.out.println(javacCommand);
-        String javacRes = "";
-
-        try {
-            javacRes = dockerLink.exeCommand(host , port , user , password , javacCommand);
-        } catch (JSchException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < points_map.size(); i++) {
-            Map<String , Integer> map = points_map.get(i);
-            Set<String> keys = map.keySet();
-            String name = "";
-
-            //获得当前节点的name属性
-            for (String key: keys) {
-                if(key.equals("name")){
-                    name = map.get(key) + "";
-                }
-
-                if(key.equals("x")) {
-                    x_arrays.add(map.get(key));
-                }
-            }
-
-            //获得当前节点的输入参数数量
-            itemId = name;
-            input = 0;
-            output = 0;
-            for (int j = 0; j < links.size(); j++) {
-                Map<String , String> linkmap = links.get(j);
-                String source = linkmap.get("source");
-                String target = linkmap.get("target");
-                if (source.equals(itemId)){
-                    output++;
-                }
-                if (target.equals(itemId)){
-                    input++;
-                }
-
-            }
-//            System.out.println("input:" + input);
-
-
-            //没有输入参数input==0
-            if (input == 0){
-                String javaCommand = "cd " + path + "\n" +
-                        "java " + "task_" + name;
-//                System.out.println("javaCommand:" + javaCommand);
-
-                String javaRes = "";
-                try {
-                    javaRes = dockerLink.exeCommand(host , port , user , password , javaCommand);
-                } catch (JSchException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                codeResult.put(name , javaRes);
-            }else{//有输入参数
-                List<String> sources = new ArrayList<>();
-                String elems = "";
-                for (int j = 0; j < links.size(); j++) {
-                    Map<String , String> linkmap = links.get(j);
-                    String source = linkmap.get("source");
-                    String target = linkmap.get("target");
-
-                    if (target.equals(itemId)){
-                        sources.add(source);
-                    }
-                }
-//                System.out.println(itemId);
-                sources.sort(new Comparator<String>() {
-                    @Override
-                    public int compare(String s1, String s2) {
-                        return s1.compareTo(s2);
-                    }
-                });
-//                System.out.println("sources:" + sources);
-                String elem = "";
-                for (int j = 0; j < sources.size(); j++) {
-                    String sourceItem = sources.get(j);
-                    String value = codeResult.get(sourceItem);
-                    String temp = value.replaceAll(System.lineSeparator() , ",");
-
-                    List<String> targetArray = new ArrayList<>();
-
-                    for (int k = 0; k < links.size(); k++) {
-                        Map<String , String> linkmap = links.get(k);
-                        String source = linkmap.get("source");
-                        String target = linkmap.get("target");
-
-                        if (source.equals(sourceItem)){
-                            targetArray.add(target);
-                        }
-                    }
-                    targetArray.sort(new Comparator<String>() {
-                        @Override
-                        public int compare(String s1, String s2) {
-                            //如果是数字，按照数字排序，如果是字符串按照字符串排序
-                            Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-                            boolean num1 = pattern.matcher(s1).matches();
-                            boolean num2 = pattern.matcher(s2).matches();
-                            if(num1 && num2){
-                                int o1 = Integer.parseInt(s1);
-                                int o2 = Integer.parseInt(s2);
-                                return o1 - o2;
-                            }else{
-                                return s1.compareTo(s2);
-                            }
-                        }
-                    });
-//                    System.out.println(targetArray);
-
-                    int index = targetArray.indexOf(itemId);
-                    elem = temp.split(",")[index];
-                    elems += " " + elem;
-
-                }
-//                System.out.println("elems:" + elems);
-
-
-                    String javaCommand = "cd " + path + "\n" +
-                            "java " + "task_" + name + elems;
-//                    System.out.println("javaCommand:" + javaCommand);
-
-                    String javaRes = "";
-                    try {
-                        javaRes = dockerLink.exeCommand(host , port , user , password , javaCommand);
-                    } catch (JSchException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-//                    System.out.println(javacRes);
-                    codeResult.put(name , javaRes);
-
-                /*String javaCommand = "cd " + path + "\n" +
-                        "java " + "task_" + name + elems;
-                System.out.println("javaCommand:" + javaCommand);
-
-                String javaRes = "";
-                try {
-                    javaRes = dockerLink.exeCommand(host , port , user , password , javaCommand);
-                } catch (JSchException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                codeResult.put(name , javaRes);*/
-            }
-
-        }
-        System.out.println("codeResult:" + codeResult);
-        String dagCodeRunRes = "";
-        for (int i = 0; i < points_map.size(); i++) {
-            Map<String, Integer> map = points_map.get(i);
-            Set<String> keys = map.keySet();
-            String name = "";
-
-            //获得当前节点的name属性
-            for (String key : keys) {
-                if (key.equals("name")) {
-                    name = map.get(key) + "";
-                }
-            }
-            //判断是否为最终节点output=0
-            output = input = 0;
-            for (int j = 0; j < links.size(); j++) {
-                Map<String , String> linkmap = links.get(j);
-                String source = linkmap.get("source");
-                String target = linkmap.get("target");
-
-                if (source.equals(name)){
-                    output++;
-                }
-                if (target.equals(name)){
-                    input++;
-                }
-
-            }
-            if (output == 0){
-                dagCodeRunRes = codeResult.get(name);
-                /*System.out.println("name :" + name);
-                System.out.println("run result: " + codeResult.get(name));*/
-            }
-        }
-
-        System.out.println(dagCodeRunRes);;
-//        System.out.println(x_arrays);
-//        List<Integer> x_arrays_single = x_arrays.stream().distinct().collect(Collectors.toList());
-//        System.out.println(x_arrays_single);
-
-//        System.out.println(jsonObject.toJSONString());
-    }
-
-
-    @Test
-    public void Test(){
-        String host =  "127.0.0.1";
-        int port = 22;
-        String user = "dr";
-        String password = "dr";
-
-
-
-        DockerLink dockerLink = new DockerLink();
-        String path = "/home/dr/sim/";
-        for (int i = 0; i < 20; i++) {
-            String taskName = "task_" + i;
-            String javaCommand = "cd " + path + "\n" +
-                    "docker rmi -f " + taskName;
-//                    System.out.println("javaCommand:" + javaCommand);
-
-            String javaRes = "";
-            try {
-                javaRes = dockerLink.exeCommand(host , port , user , password , javaCommand);
-            } catch (JSchException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    @Test
-    public void dagRunResult() {
-        String username = "ding";
-        String planName = "aa";
-        String workflowName = "Epigenomics_24.xml";
-
-        //连接docker
-        DockerLink dockerLink = new DockerLink();
-        String host = "127.0.0.1";
-        int port = 22;
-        String user = "dr";
-        String password = "dr";
-
-        String storagePath = "/home/dr/sim/";
-        String path = storagePath + username + "/" + planName + "/" + workflowName + "/";
-//        System.out.println("path:" + path);
-
-
-        List<Map<String, String>> links = new ArrayList<>();
-        List<String> points = new ArrayList<>();
-
-        String dagxmlpath = "/home/dr/sim/dagXML/";
-        String filePath = dagxmlpath + workflowName;
-        links = ParseXML.getCustomLinks(filePath);
-        points = ParseXML.getCustomPoints(filePath);
-
-
-        String itemId = "0";
-        int input = 0;
-        int output = 0;
-        for (int i = 0; i < links.size(); i++) {
-            Map<String, String> linkmap = links.get(i);
-            String source = linkmap.get("source");
-            String target = linkmap.get("target");
-//            System.out.println("source:" + source);
-//            System.out.println("target:" + target);
-            if (source.equals(itemId)) {
-                output++;
-            }
-            if (target.equals(itemId)) {
-                input++;
-            }
-
-        }
-//        System.out.println("links:" + links);
-//        System.out.println("input:" + input);
-//        System.out.println("output:" + output);
-
-//        System.out.println("------------------------------------------------------");
-//        System.out.println(points);
-
-        DagGraphUtil dagGraphUtil = new DagGraphUtil(points, links);
-
-        JSONObject jsonObject = new JSONObject(dagGraphUtil.drawDagGraph());
-
-        //point集合
-        List<Map<String, Integer>> points_map = new ArrayList<>();
-        points_map = (List) jsonObject.get("points");
-
-        //所有x坐标
-        ArrayList<Integer> x_arrays = new ArrayList<>();
-
-        //每个任务的运行结果
-        Map<String, String> codeResult = new HashMap<String, String>();
-
-        //先编译java文件
-        String javacCommand = "cd " + path + "\n" +
-                "javac *.java";
-
-//        System.out.println(javacCommand);
-        String javacRes = "";
-
-        try {
-            javacRes = dockerLink.exeCommand(host, port, user, password, javacCommand);
-        } catch (JSchException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < points_map.size(); i++) {
-            Map<String, Integer> map = points_map.get(i);
-            Set<String> keys = map.keySet();
-            String name = "";
-
-            //获得当前节点的name属性
-            for (String key : keys) {
-                if (key.equals("name")) {
-                    name = map.get(key) + "";
-                }
-
-                if (key.equals("x")) {
-                    x_arrays.add(map.get(key));
-                }
-            }
-
-            //获得当前节点的输入参数数量
-            itemId = name;
-            input = 0;
-            output = 0;
-            for (int j = 0; j < links.size(); j++) {
-                Map<String, String> linkmap = links.get(j);
-                String source = linkmap.get("source");
-                String target = linkmap.get("target");
-                if (source.equals(itemId)) {
-                    output++;
-                }
-                if (target.equals(itemId)) {
-                    input++;
-                }
-
-            }
-//            System.out.println("input:" + input);
-
-
-            //没有输入参数input==0
-            if (input == 0) {
-                String javaCommand = "cd " + path + "\n" +
-                        "java " + "task_" + name;
-//                System.out.println("javaCommand:" + javaCommand);
-
-                String javaRes = "";
-                try {
-                    javaRes = dockerLink.exeCommand(host, port, user, password, javaCommand);
-                } catch (JSchException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                codeResult.put(name, javaRes);
-            } else {//有输入参数
-                List<String> sources = new ArrayList<>();
-                String elems = "";
-                for (int j = 0; j < links.size(); j++) {
-                    Map<String, String> linkmap = links.get(j);
-                    String source = linkmap.get("source");
-                    String target = linkmap.get("target");
-
-                    if (target.equals(itemId)) {
-                        sources.add(source);
-                    }
-                }
-//                System.out.println(itemId);
-                sources.sort(new Comparator<String>() {
-                    @Override
-                    public int compare(String s1, String s2) {
-                        return s1.compareTo(s2);
-                    }
-                });
-//                System.out.println("sources:" + sources);
-                String elem = "";
-                for (int j = 0; j < sources.size(); j++) {
-                    String sourceItem = sources.get(j);
-                    String value = codeResult.get(sourceItem);
-                    String temp = value.replaceAll(System.lineSeparator(), ",");
-
-                    List<String> targetArray = new ArrayList<>();
-
-                    for (int k = 0; k < links.size(); k++) {
-                        Map<String, String> linkmap = links.get(k);
-                        String source = linkmap.get("source");
-                        String target = linkmap.get("target");
-
-                        if (source.equals(sourceItem)) {
-                            targetArray.add(target);
-                        }
-                    }
-                    targetArray.sort(new Comparator<String>() {
-                        @Override
-                        public int compare(String s1, String s2) {
-                            //如果是数字，按照数字排序，如果是字符串按照字符串排序
-                            Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-                            boolean num1 = pattern.matcher(s1).matches();
-                            boolean num2 = pattern.matcher(s2).matches();
-                            if (num1 && num2) {
-                                int o1 = Integer.parseInt(s1);
-                                int o2 = Integer.parseInt(s2);
-                                return o1 - o2;
-                            } else {
-                                return s1.compareTo(s2);
-                            }
-                        }
-                    });
-//                    System.out.println(targetArray);
-
-                    int index = targetArray.indexOf(itemId);
-                    elem = temp.split(",")[index];
-                    elems += " " + elem;
-
-                }
-//                System.out.println("elems:" + elems);
-
-
-                String javaCommand = "cd " + path + "\n" +
-                        "java " + "task_" + name + elems;
-//                    System.out.println("javaCommand:" + javaCommand);
-
-                String javaRes = "";
-                try {
-                    javaRes = dockerLink.exeCommand(host, port, user, password, javaCommand);
-                } catch (JSchException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-//                    System.out.println(javacRes);
-                codeResult.put(name, javaRes);
-            }
-
-        }
-//        System.out.println("codeResult:" + codeResult);
-        String dagCodeRunRes = "";
-        for (int i = 0; i < points_map.size(); i++) {
-            Map<String, Integer> map = points_map.get(i);
-            Set<String> keys = map.keySet();
-            String name = "";
-
-            //获得当前节点的name属性
-            for (String key : keys) {
-                if (key.equals("name")) {
-                    name = map.get(key) + "";
-                }
-            }
-            //判断是否为最终节点output=0
-            output = input = 0;
-            for (int j = 0; j < links.size(); j++) {
-                Map<String, String> linkmap = links.get(j);
-                String source = linkmap.get("source");
-                String target = linkmap.get("target");
-
-                if (source.equals(name)) {
-                    output++;
-                }
-                if (target.equals(name)) {
-                    input++;
-                }
-
-            }
-            if (output == 0) {
-                dagCodeRunRes = codeResult.get(name);
-            }
-        }
-
-        System.out.println(dagCodeRunRes);
-    }
-
-    @Test
-    public void daglinks(){
-        List<String> points = new ArrayList<>();
-        List<Map<String,String>> links = new ArrayList<>();
-
-        String dagxmlpath = "/home/dr/sim/dagXML/";
-        String workflowName = "";
-        workflowName = "Montage_20.xml";
-        String filePath = dagxmlpath + workflowName;
-        links = ParseXML.getCustomLinks(filePath);
-        points = ParseXML.getCustomPoints(filePath);
-        System.out.println(links);
-        System.out.println(points);
-    }
 
 }
